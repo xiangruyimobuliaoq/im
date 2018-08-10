@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ea657c</color>
+    <color name="colorPrimaryDark">#444344</color>
+    <color name="colorAccent">#ea657c</color>
+
+    <color name="wrappy_primary">#ea657c</color>
+    <color name="placeholder_background">#BEBEBE</color>
+
+    <color name="txt_light">#979797</color>
+
+    <color name="message_background_light">#FFFFFF</color>
+
+    <color name="message_background_dark">#565656</color>
+
+    <color name="background_gainsboro">#f2f2f2</color>
+    <color name="menu_text_active">#ea657c</color>
+    <color name="bg_menu_tab">#f9f9f9</color>
+    <color name="line">#D4D4D4</color>
+    <color name="background_med">#E0E0E0</color>
+    <color name="menu_text_normal">#929292</color>
+</resources>
