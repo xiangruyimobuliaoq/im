@@ -1,6 +1,5 @@
 package net.wrappy.im.ui.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -33,7 +32,6 @@ import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 import net.wrappy.im.util.UIUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -78,10 +76,8 @@ public class UpdateProfileActivity extends BaseActivity {
 
     @Override
     protected void init() {
-
         btnCameraAvatar.setVisibility(View.VISIBLE);
         btnCameraHeader.setVisibility(View.VISIBLE);
-
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
         edProfilePhone.setText(mRegister.mobilePhone);
         adapterGender = ArrayAdapter.createFromResource(this,
@@ -91,7 +87,6 @@ public class UpdateProfileActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 check();
-
             }
         });
         btnCameraHeader.setOnClickListener(new View.OnClickListener() {
@@ -178,12 +173,14 @@ public class UpdateProfileActivity extends BaseActivity {
         AppFuncs.showProgressWaiting(this);
         AccountHelper.VALIDATE_EMAIL email = new AccountHelper.VALIDATE_EMAIL();
         email.data.emailAddress = this.email;
-        OkUtil.publicRequest(Url.accounts_helper, new Gson().toJson(email), new OkUtil.Callback() {
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(email), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AccountHelper.VALIDATE_EMAIL.Response json = new Gson().fromJson(response.body(), AccountHelper.VALIDATE_EMAIL.Response.class);
                 if (json.code == 1000) {
                     regist();
+                } else {
+                    AppFuncs.dismissProgressWaiting();
                 }
             }
         });
@@ -192,8 +189,9 @@ public class UpdateProfileActivity extends BaseActivity {
     private void regist() {
         mRegister.email = email;
         mRegister.nickName = mNickname;
+        mRegister.gender = adapterGender.getItem(spinnerProfileGender.getSelectedItemPosition()).toString().toUpperCase();
         mRegister.extendedInfo.server = BuildConfig.DOMAIN;
-        OkUtil.publicRequest(Url.accounts, new Gson().toJson(mRegister), new OkUtil.Callback() {
+        OkUtil.publicPost(Url.accounts, new Gson().toJson(mRegister), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
@@ -201,6 +199,8 @@ public class UpdateProfileActivity extends BaseActivity {
                 toast(json.message);
                 if (json.code == 1000) {
                     startAndClearAll(LoginActivity.class);
+                } else {
+                    AppFuncs.dismissProgressWaiting();
                 }
             }
         });

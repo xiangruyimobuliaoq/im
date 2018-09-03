@@ -1,5 +1,6 @@
 package net.wrappy.im.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,14 +34,24 @@ public class PatternActivity extends SetPatternActivity {
         super.onCreate(savedInstanceState);
         mIntentType = getIntent().getStringExtra(ConsUtils.INTENT);
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
-        if (TextUtils.equals(mIntentType, ConsUtils.INTENT_LOGIN))
+        if (!TextUtils.equals(mIntentType, ConsUtils.INTENT_REGISTER))
             setTypePattern(TYPE_NOCONFIRM);
+    }
+
+    public static Intent getStartIntent(Activity context) {
+        return new Intent(context, PatternActivity.class);
     }
 
     @Override
     protected void onSetPattern(List<PatternView.Cell> pattern) {
         Intent intent;
         switch (mIntentType) {
+            case ConsUtils.INTENT_CHECK:
+                intent = new Intent();
+                intent.putExtra("pattern", PatternUtils.patternToString(pattern));
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
             case ConsUtils.INTENT_LOGIN:
                 intent = new Intent(this, InputPasswordLoginActivity.class);
                 startActivity(intent);

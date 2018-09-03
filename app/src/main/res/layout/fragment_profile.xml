@@ -1,252 +1,484 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#f2f2f2"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/lnProfileFragment"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#f2f2f2"
+              android:focusableInTouchMode="true"
+              android:orientation="vertical">
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <RelativeLayout
+        android:layout_height="match_parent"
+        android:background="#f2f2f2">
+
+        <LinearLayout
+            android:id="@+id/lnProfileFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imgProfileHeader"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:background="#e8e8e8"
-                android:scaleType="centerCrop"/>
+                android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/btnProfileCameraHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@null"
-                android:padding="10dp"
-                android:src="@mipmap/ic_camera_profile"
-                android:visibility="gone"/>
-
-            <LinearLayout
-                android:id="@+id/profile_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/imgProfileHeader"
                     android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:background="#e8e8e8"
+                    android:scaleType="centerCrop"/>
+
+                <ImageButton
+                    android:id="@+id/btnProfileCameraHeader"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/add_avarta_layout"/>
-
-                    <TextView
-                        android:id="@+id/txtClientName"
-                        style="@style/AppText02"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
-
-                </LinearLayout>
-
+                    android:layout_alignParentRight="true"
+                    android:background="@null"
+                    android:padding="10dp"
+                    android:src="@mipmap/ic_camera_profile"
+                    android:visibility="gone"/>
 
                 <LinearLayout
+                    android:id="@+id/profile_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <LinearLayout
-                        android:id="@+id/lnProfileFullname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="#fff"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
+
+                        <include layout="@layout/add_avarta_layout"/>
 
                         <TextView
-                            android:id="@+id/txtProfileNickname"
-                            style="@style/AppText03"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="@string/fullname"/>
-
-                        <View style="@style/divider"/>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="10dp">
-
-                            <TextView
-                                android:id="@+id/edProfileFullName"
-                                style="@style/AppText02"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:hint="@string/fullname"
-                                android:inputType="textNoSuggestions"
-                                android:maxLength="25"/>
-                        </RelativeLayout>
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/lnProfileUsername"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="#fff"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/AppText03"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="@string/username"/>
-
-                        <View style="@style/divider"/>
-
-                        <TextView
-                            android:id="@+id/txtProfileUsername"
+                            android:id="@+id/txtClientName"
                             style="@style/AppText02"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/username"
-                            android:padding="10dp"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/lnProfilePhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="#fff"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/AppText03"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="@string/mobile_phone"/>
-
-                        <View style="@style/divider"/>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="10dp">
-
-                            <TextView
-                                android:id="@+id/edProfilePhone"
-                                style="@style/AppText02"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:enabled="false"
-                                android:hint="@string/mobile_phone"/>
-                        </RelativeLayout>
-
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"/>
 
                     </LinearLayout>
 
+
                     <LinearLayout
-                        android:id="@+id/lnProfileEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:background="#fff"
                         android:orientation="vertical">
 
-                        <TextView
-                            style="@style/AppText03"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="@string/email"/>
-
-                        <View style="@style/divider"/>
-
-                        <RelativeLayout
+                        <LinearLayout
+                            android:id="@+id/lnProfileFullname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="10dp">
+                            android:layout_marginTop="10dp"
+                            android:background="#fff"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/edProfileEmail"
-                                style="@style/AppText02"
+                                android:id="@+id/txtProfileNickname"
+                                style="@style/AppText03"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text="@string/fullname"/>
+
+                            <View style="@style/divider"/>
+
+                            <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:hint="@string/email"
-                                android:inputType="textEmailAddress"/>
-                        </RelativeLayout>
+                                android:orientation="horizontal"
+                                android:padding="10dp">
+
+                                <EditText
+                                    android:id="@+id/edProfileFullName"
+                                    style="@style/AppText02"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:hint="@string/fullname"
+                                    android:inputType="textNoSuggestions"
+                                    android:maxLength="25"/>
+                            </RelativeLayout>
 
 
-                    </LinearLayout>
+                        </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/lnProfileGender"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="#fff"
-                        android:orientation="vertical">
-
-                        <RelativeLayout
+                        <LinearLayout
+                            android:id="@+id/lnProfileUsername"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="#fff"
+                            android:orientation="vertical">
 
                             <TextView
                                 style="@style/AppText03"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="10dp"
-                                android:text="@string/gender"/>
+                                android:text="@string/username"/>
 
-
-                        </RelativeLayout>
-
-
-                        <View style="@style/divider"/>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="10dp">
+                            <View style="@style/divider"/>
 
                             <TextView
-                                android:id="@+id/edProfileGender"
+                                android:id="@+id/txtProfileUsername"
                                 style="@style/AppText02"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:text="Female"/>
+                                android:hint="@string/username"
+                                android:padding="10dp"/>
 
-                        </RelativeLayout>
+                        </LinearLayout>
 
+                        <LinearLayout
+                            android:id="@+id/lnProfilePhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="#fff"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/AppText03"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text="@string/mobile_phone"/>
+
+                            <View style="@style/divider"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="10dp">
+
+                                <EditText
+                                    android:id="@+id/edProfilePhone"
+                                    style="@style/AppText02"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:enabled="false"
+                                    android:hint="@string/mobile_phone"/>
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/lnProfileEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="#fff"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/AppText03"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text="@string/email"/>
+
+                            <View style="@style/divider"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="10dp">
+
+                                <EditText
+                                    android:id="@+id/edProfileEmail"
+                                    style="@style/AppText02"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:hint="@string/email"
+                                    android:inputType="textEmailAddress"/>
+                            </RelativeLayout>
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/lnProfileGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="#fff"
+                            android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    style="@style/AppText03"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:text="@string/gender"/>
+
+
+                            </RelativeLayout>
+
+
+                            <View style="@style/divider"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="10dp">
+
+                                <TextView
+                                    android:id="@+id/edProfileGender"
+                                    style="@style/AppText02"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:text="@string/gender"/>
+
+                                <android.support.v7.widget.AppCompatSpinner
+                                    android:id="@+id/spnProfile"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:visibility="gone"/>
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btnProfileSubmit"
+                            style="@style/AppButton_OK"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/btn_update"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/lnForFriend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="#fff"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/lnProfileSendMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:focusable="false"
+                            android:src="@mipmap/ic_setting_chat"/>
+
+                        <TextView
+                            style="@style/AppText02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="Send Message"/>
 
                     </LinearLayout>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="48dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#565656"/>
+
+                    <LinearLayout
+                        android:id="@+id/lnProfileShareContact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_setting_contact"/>
+
+                        <TextView
+                            style="@style/AppText02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="Share Contact"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="48dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#565656"/>
+
+                    <LinearLayout
+                        android:id="@+id/lnProfileBlockUser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_setting_lock"/>
+
+                        <TextView
+                            style="@style/AppText02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="Block user"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnForSeft"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="#fff"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/lnProfileChangeQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_change_question"/>
+
+                        <TextView
+                            android:id="@+id/txtProfileChangeQuestion"
+                            style="@style/AppText02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="@string/security_question_change"/>
+
+                    </LinearLayout>
+
+                    <!--<View-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="1px"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:layout_marginLeft="48dp"-->
+                        <!--android:layout_marginTop="10dp"-->
+                        <!--android:background="#565656"/>-->
+
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/lnProfileInvite"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_add_member"/>
+
+                        <TextView
+                            style="@style/AppText02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="@string/promotion_invite_friend"/>
+
+                    </LinearLayout>
+
+                    <View
+                        style="@style/divider"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="48dp"
+                        android:layout_marginTop="10dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/lnProfileLogout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_setting_contact"/>
+
+                        <TextView
+                            android:id="@+id/txtProfileLogout"
+                            style="@style/AppText02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="@string/logout"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnForStranger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="#fff"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/lnProfileAddFriend"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/setting_add"/>
+
+                        <TextView
+                            style="@style/AppText02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="@string/add_people"/>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-
-        </RelativeLayout>
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

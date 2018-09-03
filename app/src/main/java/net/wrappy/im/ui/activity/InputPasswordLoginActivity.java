@@ -1,5 +1,6 @@
 package net.wrappy.im.ui.activity;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -52,7 +53,9 @@ public class InputPasswordLoginActivity extends BaseActivity {
         mBtnForgetPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Bundle bundle = new Bundle();
+                bundle.putString("username", mUsername);
+                overlay(ForgetPasswordActivity.class, bundle);
             }
         });
     }

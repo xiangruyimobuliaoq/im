@@ -19,4 +19,9 @@ public class EmptyFragment extends BaseFragment {
     protected void init() {
 
     }
+
+    @Override
+    public void reloadFragment() {
+
+    }
 }

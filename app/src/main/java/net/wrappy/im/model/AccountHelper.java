@@ -24,7 +24,6 @@ public class AccountHelper {
          * type : validate_phone
          * data : {"countryCode":"86","phone":"13689728762","sendValidationCode":true,"checkRegistered":true,"codeType":"registration"}
          */
-
         public String type = VALIDATE_PHONE;
         public Data data = new Data();
 
@@ -36,7 +35,6 @@ public class AccountHelper {
              * checkRegistered : true
              * codeType : registration
              */
-
             public String countryCode;
             public String phone;
             public boolean sendValidationCode;
@@ -51,7 +49,6 @@ public class AccountHelper {
          * type : validate_phone
          * data : {"countryCode":"86","phone":"13689728762","sendValidationCode":true,"checkRegistered":true,"codeType":"registration"}
          */
-
         public String type = VALIDATE_SMS_CODE;
         public Data data = new Data();
 
@@ -63,7 +60,6 @@ public class AccountHelper {
              * checkRegistered : true
              * codeType : registration
              */
-
             public String countryCode;
             public String phone;
             public String type;
@@ -76,9 +72,9 @@ public class AccountHelper {
          * type : validate_phone
          * data : {"countryCode":"86","phone":"13689728762","sendValidationCode":true,"checkRegistered":true,"codeType":"registration"}
          */
-
         public String type = VALIDATE_PASSWORD;
         public Data data = new Data();
+        public String language;
 
         public static class Data {
             /**
@@ -88,15 +84,11 @@ public class AccountHelper {
              * checkRegistered : true
              * codeType : registration
              */
-
             public String username;
             public String password;
-            public String language;
         }
 
         public static class Response {
-
-
             /**
              * code : -1000
              * message : FAIL
@@ -104,7 +96,6 @@ public class AccountHelper {
              * response_timestamp : 2018-07-30T09:37:49.538
              * data : ["Template for INSUFFICIENT_UPPERCASE not find","Template for INSUFFICIENT_SPECIAL not find"]
              */
-
             public int code;
             public String message;
             public String request_timestamp;
@@ -121,6 +112,7 @@ public class AccountHelper {
 
         public String type = ConsUtils.SECURITY_QUESTIONS;
         public Data data = new Data();
+        public String language;
 
         public static class Data {
             /**
@@ -130,18 +122,15 @@ public class AccountHelper {
              * checkRegistered : true
              * codeType : registration
              */
-
-            public String language;
         }
 
         public static class Response {
-
-
             public int code;
             public String message;
             public String request_timestamp;
             public String response_timestamp;
             public List<Data> data;
+            public String language;
 
             public static class Data {
                 /**
@@ -152,7 +141,6 @@ public class AccountHelper {
                  */
 
                 public String id;
-                public String language;
                 public String code;
                 public String question;
             }
@@ -180,11 +168,12 @@ public class AccountHelper {
              * response_timestamp : 2018-07-30T15:40:13.163
              * data : 446971874@126.com
              */
+            public int status;
             public int code;
             public String message;
             public String request_timestamp;
             public String response_timestamp;
-            public String data;
+            public Object data;
         }
     }
 

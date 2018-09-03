@@ -1,9 +1,6 @@
 package net.wrappy.im.ui.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -24,11 +21,9 @@ import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.Register;
 import net.wrappy.im.ui.view.Layout;
-import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +50,6 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
 
     @Override
     protected void init() {
-
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
         getListQuestion();
         btnQuestionComplete.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +78,12 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                                 break;
                             }
 
-                            if (answer.length() >8) {
+                            if (answer.length() > 8) {
+                                errorString = String.format(getString(R.string.error_min_length_answer), (i + 1));
+                                break;
+                            }
+
+                            if (answer.length() < 3) {
                                 errorString = String.format(getString(R.string.error_min_length_answer), (i + 1));
                                 break;
                             }
@@ -126,8 +125,8 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
 
     private void getListQuestion() {
         AccountHelper.SECURITY_QUESTIONS questions = new AccountHelper.SECURITY_QUESTIONS();
-        questions.data.language = "en";
-        OkUtil.publicRequest(Url.accounts_helper, new Gson().toJson(questions), new OkUtil.Callback() {
+        questions.language = "en";
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(questions), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AccountHelper.SECURITY_QUESTIONS.Response json = new Gson().fromJson(response.body(), AccountHelper.SECURITY_QUESTIONS.Response.class);

@@ -22,6 +22,7 @@ import net.wrappy.im.model.Register;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
+import net.wrappy.im.util.PopupUtils;
 
 import butterknife.BindView;
 
@@ -63,11 +64,11 @@ public class ValidatePhoneActivity extends BaseActivity {
                 String value = txtPin.getValue();
                 mPhone = edVerifyPhone.getText().toString().trim();
                 if (TextUtils.isEmpty(value)) {
-                    toast("Please input the SNS code");
+                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "tips", "Please input the SNS code");
                     return;
                 }
                 if (TextUtils.isEmpty(mPhone)) {
-                    toast("Please input the phone number");
+                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "tips", "Please input the phone number");
                     return;
                 }
                 validateCode(value, mPhone);
@@ -78,7 +79,7 @@ public class ValidatePhoneActivity extends BaseActivity {
             public void onClick(View v) {
                 mPhone = edVerifyPhone.getText().toString().trim();
                 if (TextUtils.isEmpty(mPhone)) {
-                    toast("Please input the phone number");
+                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "tips", "Please input the phone number");
                     return;
                 }
                 mCountryCode = picker.getSelectedCountryCodeWithPlus();
@@ -90,11 +91,11 @@ public class ValidatePhoneActivity extends BaseActivity {
     private void validateCode(String value, String phone) {
         AppFuncs.showProgressWaiting(this);
         AccountHelper.VALIDATE_SMS_CODE helper = new AccountHelper.VALIDATE_SMS_CODE();
-        helper.data.countryCode = mCountryCode;
+        helper.data.countryCode = picker.getSelectedCountryCodeWithPlus();
         helper.data.type = ConsUtils.REGISTRATION;
         helper.data.phone = phone;
         helper.data.code = value;
-        OkUtil.publicRequest(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
@@ -104,7 +105,7 @@ public class ValidatePhoneActivity extends BaseActivity {
                     Bundle bundle = new Bundle();
                     bundle.putString(ConsUtils.INTENT, ConsUtils.INTENT_REGISTER);
                     Register register = new Register();
-                    register.mobilePhone = mCountryCode + mPhone;
+                    register.mobilePhone = picker.getSelectedCountryCodeWithPlus() + mPhone;
                     bundle.putSerializable(ConsUtils.REGISTRATION, register);
                     overlay(PatternActivity.class, bundle);
                     AppFuncs.dismissKeyboard(ValidatePhoneActivity.this);
@@ -121,7 +122,7 @@ public class ValidatePhoneActivity extends BaseActivity {
         helper.data.countryCode = selectedCountryCodeWithPlus;
         helper.data.codeType = ConsUtils.REGISTRATION;
         helper.data.phone = phone;
-        OkUtil.publicRequest(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();

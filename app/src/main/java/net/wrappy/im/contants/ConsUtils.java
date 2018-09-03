@@ -35,6 +35,7 @@ public class ConsUtils {
     public static final String VALIDATE_EMAIL = "validate_email";
     public static final String USERNAME = "username";
     public static final String FIND_USER_ACCOUNT = "find_user_account";
+    public static final String INTENT_CHECK = "check";
     public static String VALIDATE_PHONE = "validate_phone";
     public static String VALIDATE_PASSWORD = "validate_password";
     public static String SECURITY_QUESTIONS = "security_questions";

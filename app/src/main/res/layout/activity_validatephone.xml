@@ -73,7 +73,7 @@
         app:password="false"
         app:pinBackground="@drawable/bg_passcode"
         app:pinHeight="40dp"
-        app:pinLength="6"
+        app:pinLength="5"
         app:pinWidth="40dp"/>
 
     <Button

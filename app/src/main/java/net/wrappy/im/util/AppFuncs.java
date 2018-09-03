@@ -2,6 +2,7 @@ package net.wrappy.im.util;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import com.yalantis.ucrop.UCrop;
 import net.wrappy.im.BaseActivity;
 import net.wrappy.im.BuildConfig;
 import net.wrappy.im.R;
+import net.wrappy.im.ui.fragment.ProfileFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -139,11 +141,65 @@ public class AppFuncs {
 
         }
     }
+    public static void openCameraFrag(ProfileFragment activity, boolean isAvatar) {
+        if ((ContextCompat.checkSelfPermission(activity.getActivity(),
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) && ContextCompat.checkSelfPermission(activity.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(activity.getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile(activity);
+                } catch (IOException ex) {
+
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(activity.getActivity(),
+                            activity.getActivity().getPackageName() + ".provider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    if (isAvatar) {
+                        activity.startActivityForResult(takePictureIntent, BaseActivity.RESULT_AVATAR);
+                    } else {
+                        activity.startActivityForResult(takePictureIntent, BaseActivity.RESULT_BANNER);
+                    }
+
+                }
+            }
+        } else {
+            if (isAvatar) {
+                ActivityCompat.requestPermissions(activity.getActivity(),
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
+                        BaseActivity.REQUEST_PERMISSION_CAMERA_AVATAR);
+            } else {
+                ActivityCompat.requestPermissions(activity.getActivity(),
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
+                        BaseActivity.REQUEST_PERMISSION_CAMERA_BANNER);
+            }
+
+        }
+    }
 
     private static File createImageFile(Activity activity) throws IOException {
         // Create an image file name
         String imageFileName = "JPEG_" + UUID.randomUUID().toString();
         File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    private static File createImageFile(ProfileFragment activity) throws IOException {
+        // Create an image file name
+        String imageFileName = "JPEG_" + UUID.randomUUID().toString();
+        File storageDir = activity.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -173,6 +229,30 @@ public class AppFuncs {
                         BaseActivity.REQUEST_PERMISSION_PICKER_AVATAR);
             } else {
                 ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        BaseActivity.REQUEST_PERMISSION_PICKER_BANNER);
+            }
+
+        }
+    }
+    public static void openGalleryFrag(ProfileFragment activity, boolean isAvatar) {
+        if ((ContextCompat.checkSelfPermission(activity.getContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
+            Intent intent = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            if (isAvatar) {
+                activity.startActivityForResult(intent, BaseActivity.RESULT_AVATAR);
+            } else {
+                activity.startActivityForResult(intent, BaseActivity.RESULT_BANNER);
+            }
+        } else {
+            if (isAvatar) {
+                ActivityCompat.requestPermissions(activity.getActivity(),
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        BaseActivity.REQUEST_PERMISSION_PICKER_AVATAR);
+            } else {
+                ActivityCompat.requestPermissions(activity.getActivity(),
                         new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         BaseActivity.REQUEST_PERMISSION_PICKER_BANNER);
             }
@@ -210,5 +290,9 @@ public class AppFuncs {
                     .start(activity, requestCode);
         }
 
+    }
+
+    public static boolean isEmailValid(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

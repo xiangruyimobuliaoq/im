@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class LauncherActivity extends AppCompatActivity {
     public static final int REQUEST_PERMISSION_CAMERA_AVATAR = 501;
     public static final int REQUEST_PERMISSION_CAMERA_BANNER = 502;
     public static final int RESULT_AVATAR = 503;
@@ -48,6 +48,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);

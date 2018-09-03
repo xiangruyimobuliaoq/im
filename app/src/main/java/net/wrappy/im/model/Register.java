@@ -51,6 +51,7 @@ public class Register implements Serializable {
     public String zip;
     public ExtendedInfo extendedInfo = new ExtendedInfo();
     public List<SecurityQuestions> securityQuestions = new ArrayList<>();
+    public String gender;
 
     public static class ExtendedInfo implements Serializable {
         /**

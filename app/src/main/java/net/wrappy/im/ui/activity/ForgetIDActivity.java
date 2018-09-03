@@ -55,7 +55,7 @@ public class ForgetIDActivity extends BaseActivity {
         AccountHelper.FIND_USER_ACCOUNT account = new AccountHelper.FIND_USER_ACCOUNT();
         account.data.email = mEmail;
         account.data.phone = mPhone;
-        OkUtil.publicRequest(Url.accounts_helper, new Gson().toJson(account), new OkUtil.Callback() {
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(account), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AccountHelper.FIND_USER_ACCOUNT.Response json = new Gson().fromJson(response.body(), AccountHelper.FIND_USER_ACCOUNT.Response.class);

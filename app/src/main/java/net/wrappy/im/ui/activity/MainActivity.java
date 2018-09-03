@@ -1,9 +1,13 @@
 package net.wrappy.im.ui.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
@@ -14,14 +18,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yalantis.ucrop.UCrop;
+
 import net.wrappy.im.BaseActivity;
+import net.wrappy.im.BaseFragment;
 import net.wrappy.im.R;
 import net.wrappy.im.ui.fragment.EmptyFragment;
 import net.wrappy.im.ui.fragment.ProfileFragment;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.ui.view.NoScrollViewPager;
+import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.UIUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -49,8 +60,8 @@ public class MainActivity extends BaseActivity {
     TextView edSearchConversation;
     @BindView(R.id.imgLogo)
     ImageView imgLogo;
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
+//    @BindView(R.id.fab)
+//    FloatingActionButton mFab;
     private FragmentManager fragmentManager;
     private Adapter adapter;
     private Map<Integer, Fragment> mCache = new HashMap<>();
@@ -68,6 +79,19 @@ public class MainActivity extends BaseActivity {
     protected void init() {
         initViewPager();
         initTabLayout();
+        btnHeaderEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    AppFuncs.dismissKeyboard(MainActivity.this);
+                    ProfileFragment page = (ProfileFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + mViewPager.getId() + ":" + mViewPager.getCurrentItem());
+                    page.onDataEditChange(true);
+                    btnHeaderEdit.setVisibility(View.GONE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     private void initViewPager() {
@@ -79,46 +103,51 @@ public class MainActivity extends BaseActivity {
         mViewPager.setOffscreenPageLimit(1);
     }
 
-    class Adapter extends FragmentStatePagerAdapter {
+    public class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments = new ArrayList<>();
+        private final List<String> mFragmentTitles = new ArrayList<>();
+        private final List<Integer> mFragmentIcons = new ArrayList<>();
 
         public Adapter(FragmentManager fm) {
             super(fm);
         }
 
+        public void addFragment(Fragment fragment, String title, int icon) {
+            mFragments.add(fragment);
+            mFragmentTitles.add(title);
+            mFragmentIcons.add(icon);
+        }
+
         @Override
         public Fragment getItem(int position) {
-
-            return getFragment(position);
+            if (position == 0) {
+                return new EmptyFragment();
+            } else if (position == 1) {
+                return new EmptyFragment();
+            } else if (position == 2) {
+                return new EmptyFragment();
+            } else {
+                return new ProfileFragment();
+            }
         }
 
         @Override
         public int getCount() {
             return 4;
         }
-    }
 
-    public Fragment getFragment(int position) {
-        //加上缓存功能,优先取缓存
-        Fragment fragment = mCache.get(position);
-        if (fragment != null) {
-            return fragment;
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "";
         }
-        switch (position) {
-            case 0:
-                fragment = new EmptyFragment();
-                break;
-            case 1:
-                fragment = new EmptyFragment();
-                break;
-            case 2:
-                fragment = new EmptyFragment();
-                break;
-            case 3:
-                fragment = new ProfileFragment();
-                break;
+
+        @Override
+        public int getItemPosition(Object object) {
+            if (object instanceof BaseFragment) {
+                ((BaseFragment) object).reloadFragment();
+            }
+            return super.getItemPosition(object);
         }
-        mCache.put(position, fragment);
-        return fragment;
     }
 
     private void initTabLayout() {
@@ -149,7 +178,7 @@ public class MainActivity extends BaseActivity {
                         appTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_menu_active, 0, 0);
                     } else if (tab.getPosition() == 1) {
                         btnHeaderSearch.setVisibility(View.VISIBLE);
-                        mFab.setVisibility(View.VISIBLE);
+//                        mFab.setVisibility(View.VISIBLE);
                         appTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_menu_conversation_active, 0, 0);
                     } else if (tab.getPosition() == 2) {
                         appTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_promotion_h, 0, 0);
@@ -177,7 +206,7 @@ public class MainActivity extends BaseActivity {
                         tv.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_menu_normal, 0, 0);
                     } else if (tab.getPosition() == 1) {
                         btnHeaderSearch.setVisibility(View.GONE);
-                        mFab.setVisibility(View.GONE);
+//                        mFab.setVisibility(View.GONE);
                         tv.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_menu_conversation_normal, 0, 0);
                     } else if (tab.getPosition() == 2) {
                         tv.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_promotion, 0, 0);
@@ -205,5 +234,12 @@ public class MainActivity extends BaseActivity {
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         tv.setCompoundDrawablesWithIntrinsicBounds(0, isResIcon, 0, 0);
         mTabLayout.getTabAt(index).setCustomView(tv);
+    }
+
+    @Override
+    public void onResultPickerImage(boolean isAvatar, Intent data, boolean isSuccess) {
+        super.onResultPickerImage(isAvatar, data, isSuccess);
+        ProfileFragment page = (ProfileFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + mViewPager.getId() + ":" + mViewPager.getCurrentItem());
+        page.onResultPickerImage(isAvatar, data, isSuccess);
     }
 }

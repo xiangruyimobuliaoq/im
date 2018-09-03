@@ -16,5 +16,7 @@ public class Url {
     public static String OauthToken = BuildConfig.ROOT_URL + "/api/oauth/token";
     public static String accounts_helper = BuildConfig.ROOT_URL + "/api/accounts/helper";
     public static String accounts = BuildConfig.ROOT_URL + "/api/accounts";
+    public static String accounts_securityQuestions = BuildConfig.ROOT_URL + "/api/accounts/securityQuestions/";
+    public static String accounts_userFile = BuildConfig.ROOT_URL + "/api/accounts/userFile";
 
 }

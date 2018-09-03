@@ -9,9 +9,11 @@ import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.Response;
 
 import net.wrappy.im.App;
+import net.wrappy.im.BaseActivity;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.Auth;
+import net.wrappy.im.ui.activity.LoginActivity;
 
 /**
  * 创建者     彭龙
@@ -38,6 +40,12 @@ public class OkUtil {
         OkGo.getInstance().addCommonHeaders(headers);
     }
 
+    public static void refreshAdmin() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.put(ConsUtils.AUTHORIZATION_KEY, ConsUtils.AUTHORIZATION_VALUE_DEFAULT);
+        OkGo.getInstance().addCommonHeaders(headers);
+    }
+
     public static void Login(String username, String password, final Callback callback) {
         HttpHeaders headers = new HttpHeaders();
         headers.put(ConsUtils.AUTHORIZATION_KEY, ConsUtils.AUTHORIZATION_VALUE_DEFAULT);
@@ -54,6 +62,7 @@ public class OkUtil {
                         ConsUtils.putRefreshtoken(auth.refresh_token);
                         ConsUtils.putTokenType(auth.token_type);
                         SpUtil.saveObj(ConsUtils.PROFILE, auth);
+                        refresh(auth.access_token, auth.token_type);
                         callback.success(response);
                     }
 
@@ -65,7 +74,7 @@ public class OkUtil {
                 });
     }
 
-    public static void publicRequest(final String url, final String json, final Callback callback) {
+    public static void publicPost(final String url, final String json, final Callback callback) {
         if (TextUtils.isEmpty(ConsUtils.getAdminAccestoken()) || TextUtils.isEmpty(ConsUtils.getAdminRefreshtoken()) || TextUtils.isEmpty(ConsUtils.getAdminTokenType())) {
             HttpHeaders headers = new HttpHeaders();
             headers.put(ConsUtils.AUTHORIZATION_KEY, ConsUtils.AUTHORIZATION_VALUE_DEFAULT);
@@ -82,7 +91,7 @@ public class OkUtil {
                             ConsUtils.putAdminRefreshtoken(auth.refresh_token);
                             ConsUtils.putAdminTokenType(auth.token_type);
                             refresh(auth.access_token, auth.token_type);
-                            publicRequest(url, json, callback);
+                            publicPost(url, json, callback);
                         }
 
                         @Override
@@ -96,10 +105,206 @@ public class OkUtil {
                 public void onSuccess(Response<String> response) {
                     if (response.body().contains("{\"error\":\"unauthorized\",")) {
                         ConsUtils.putAdminAccestoken(null);
-                        publicRequest(url, json, callback);
+                        publicPost(url, json, callback);
                     } else {
                         callback.success(response);
                     }
+                }
+
+                @Override
+                public void onError(Response<String> response) {
+                    super.onError(response);
+                    callback.error(response);
+                }
+            });
+        }
+    }
+
+    public static void publicGet(final String url, final Callback callback) {
+        if (TextUtils.isEmpty(ConsUtils.getAdminAccestoken()) || TextUtils.isEmpty(ConsUtils.getAdminRefreshtoken()) || TextUtils.isEmpty(ConsUtils.getAdminTokenType())) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.put(ConsUtils.AUTHORIZATION_KEY, ConsUtils.AUTHORIZATION_VALUE_DEFAULT);
+            OkGo.getInstance().addCommonHeaders(headers);
+            OkGo.<String>post(Url.OauthToken)
+                    .params("grant_type", "password")
+                    .params("username", ConsUtils.ADMIN_USERNAME)
+                    .params("password", ConsUtils.ADMIN_PASSWORD)
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onSuccess(Response<String> response) {
+                            Auth auth = gson.fromJson(response.body(), Auth.class);
+                            ConsUtils.putAdminAccestoken(auth.access_token);
+                            ConsUtils.putAdminRefreshtoken(auth.refresh_token);
+                            ConsUtils.putAdminTokenType(auth.token_type);
+                            refresh(auth.access_token, auth.token_type);
+                            publicGet(url, callback);
+                        }
+
+                        @Override
+                        public void onError(Response<String> response) {
+                            super.onError(response);
+                        }
+                    });
+        } else {
+            OkGo.<String>post(url).execute(new StringCallback() {
+                @Override
+                public void onSuccess(Response<String> response) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",")) {
+                        ConsUtils.putAdminAccestoken(null);
+                        publicGet(url, callback);
+                    } else {
+                        callback.success(response);
+                    }
+                }
+
+                @Override
+                public void onError(Response<String> response) {
+                    super.onError(response);
+                    callback.error(response);
+                }
+            });
+        }
+    }
+
+    public static void privatePost(final BaseActivity activity, final String url, final String json, final Callback callback) {
+        if (TextUtils.isEmpty(ConsUtils.getAccestoken()) || TextUtils.isEmpty(ConsUtils.getRefreshtoken()) || TextUtils.isEmpty(ConsUtils.getTokenType())) {
+            activity.overlay(LoginActivity.class);
+        } else {
+            OkGo.<String>post(url).upJson(json).execute(new StringCallback() {
+                @Override
+                public void onSuccess(Response<String> response) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                        refreshAdmin();
+                        OkGo.<String>post(Url.OauthToken)
+                                .params("grant_type", "refresh_token")
+                                .params("refresh_token", ConsUtils.getRefreshtoken())
+                                .execute(new StringCallback() {
+                                    @Override
+                                    public void onSuccess(Response<String> response) {
+                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                                            activity.overlay(LoginActivity.class);
+                                        } else {
+                                            Auth auth = gson.fromJson(response.body(), Auth.class);
+                                            ConsUtils.putAccestoken(auth.access_token);
+                                            ConsUtils.putRefreshtoken(auth.refresh_token);
+                                            ConsUtils.putTokenType(auth.token_type);
+                                            SpUtil.saveObj(ConsUtils.PROFILE, auth);
+                                            refresh(auth.access_token, auth.token_type);
+                                            privatePost(activity, url, json, callback);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Response<String> response) {
+                                        super.onError(response);
+                                        callback.error(response);
+                                    }
+                                });
+                    } else {
+                        callback.success(response);
+                    }
+                }
+
+                @Override
+                public void onError(Response<String> response) {
+                    super.onError(response);
+                    callback.error(response);
+                }
+            });
+        }
+    }
+
+    public static void privatePut(final BaseActivity activity, final String url, final String json, final Callback callback) {
+        if (TextUtils.isEmpty(ConsUtils.getAccestoken()) || TextUtils.isEmpty(ConsUtils.getRefreshtoken()) || TextUtils.isEmpty(ConsUtils.getTokenType())) {
+            activity.overlay(LoginActivity.class);
+        } else {
+            OkGo.<String>put(url).upJson(json).execute(new StringCallback() {
+                @Override
+                public void onSuccess(Response<String> response) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                        refreshAdmin();
+                        OkGo.<String>post(Url.OauthToken)
+                                .params("grant_type", "refresh_token")
+                                .params("refresh_token", ConsUtils.getRefreshtoken())
+                                .execute(new StringCallback() {
+                                    @Override
+                                    public void onSuccess(Response<String> response) {
+                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                                            activity.overlay(LoginActivity.class);
+                                        } else {
+                                            Auth auth = gson.fromJson(response.body(), Auth.class);
+                                            ConsUtils.putAccestoken(auth.access_token);
+                                            ConsUtils.putRefreshtoken(auth.refresh_token);
+                                            ConsUtils.putTokenType(auth.token_type);
+                                            SpUtil.saveObj(ConsUtils.PROFILE, auth);
+                                            refresh(auth.access_token, auth.token_type);
+                                            privatePut(activity, url, json, callback);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Response<String> response) {
+                                        super.onError(response);
+                                        callback.error(response);
+                                    }
+                                });
+                    } else {
+                        callback.success(response);
+                    }
+                }
+
+                @Override
+                public void onError(Response<String> response) {
+                    super.onError(response);
+                    callback.error(response);
+                }
+            });
+        }
+    }
+
+    public static void privateGet(final BaseActivity activity, final String url, final Callback callback) {
+        if (TextUtils.isEmpty(ConsUtils.getAccestoken()) || TextUtils.isEmpty(ConsUtils.getRefreshtoken()) || TextUtils.isEmpty(ConsUtils.getTokenType())) {
+            activity.overlay(LoginActivity.class);
+        } else {
+            OkGo.<String>get(url).execute(new StringCallback() {
+                @Override
+                public void onSuccess(Response<String> response) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                        refreshAdmin();
+                        OkGo.<String>post(Url.OauthToken)
+                                .params("grant_type", "refresh_token")
+                                .params("refresh_token", ConsUtils.getRefreshtoken())
+                                .execute(new StringCallback() {
+                                    @Override
+                                    public void onSuccess(Response<String> response) {
+                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                                            activity.overlay(LoginActivity.class);
+                                        } else {
+                                            Auth auth = gson.fromJson(response.body(), Auth.class);
+                                            ConsUtils.putAccestoken(auth.access_token);
+                                            ConsUtils.putRefreshtoken(auth.refresh_token);
+                                            ConsUtils.putTokenType(auth.token_type);
+                                            SpUtil.saveObj(ConsUtils.PROFILE, auth);
+                                            refresh(auth.access_token, auth.token_type);
+                                            privateGet(activity, url, callback);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Response<String> response) {
+                                        super.onError(response);
+                                        callback.error(response);
+                                    }
+                                });
+                    } else {
+                        callback.success(response);
+                    }
+                }
+
+                @Override
+                public void onError(Response<String> response) {
+                    super.onError(response);
+                    callback.error(response);
                 }
             });
         }
@@ -111,6 +316,4 @@ public class OkUtil {
         public void error(Response<String> response) {
         }
     }
-
-
 }

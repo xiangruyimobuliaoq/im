@@ -1,5 +1,8 @@
 package net.wrappy.im.ui.activity;
 
+import android.app.Activity;
+import android.app.LauncherActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,7 +36,7 @@ public class LoginActivity extends BaseActivity {
     Button btnShowRegister;
     @BindView(R.id.edtUserMame)
     EditText edtUserMame;
-
+    public static final int REQUEST_CODE_INPUT_NEW_PASSWORD = 1113;
     @Override
     protected void init() {
         forgetID.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +67,12 @@ public class LoginActivity extends BaseActivity {
                 overlay(ValidatePhoneActivity.class);
             }
         });
+    }
+
+    public static void start(Activity activity) {
+        Intent intent = new Intent(activity, LauncherActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
     }
 
 }

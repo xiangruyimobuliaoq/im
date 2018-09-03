@@ -2,6 +2,7 @@ package net.wrappy.im.ui.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,6 +50,9 @@ public class InputPasswordRegisterActivity extends BaseActivity {
     @Override
     protected void init() {
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
+
+        showHidePassword(edtpassword, false);
+        showHidePassword(edtconfirmpassword, false);
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,8 +72,8 @@ public class InputPasswordRegisterActivity extends BaseActivity {
         VALIDATE_PASSWORD helper = new VALIDATE_PASSWORD();
         helper.data.username = mun;
         helper.data.password = mPwd;
-        helper.data.language = "en";
-        OkUtil.publicRequest(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
+        helper.language = "en";
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
@@ -80,6 +84,8 @@ public class InputPasswordRegisterActivity extends BaseActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(ConsUtils.REGISTRATION, mRegister);
                     overlay(RegistrationSecurityQuestionActivity.class, bundle);
+                } else if (json.code == -1020) {
+                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "tips", json.message);
                 } else {
                     String s = "";
                     for (String ss : json.data
@@ -93,7 +99,7 @@ public class InputPasswordRegisterActivity extends BaseActivity {
     }
 
     private void check() {
-        if (TextUtils.isEmpty(mun) || !mun.matches("^[a-zA-Z][a-zA-Z0-9_]{5,29}$")) {
+        if (TextUtils.isEmpty(mun) || !mun.matches("^[a-zA-Z0-9]{6,48}$")) {
             toast("User name is wrong");
             return;
         }
