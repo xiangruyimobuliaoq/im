@@ -25,6 +25,9 @@ import net.wrappy.im.ui.activity.LoginActivity;
  * 更新描述   ${TODO}
  */
 public class OkUtil {
+
+
+
     public static Gson gson = new Gson();
 
     public static void init(App app) {
