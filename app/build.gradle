@@ -21,9 +21,9 @@ android {
     productFlavors {
         free {
             dimension "free"
-            buildConfigField 'String', 'ROOT_URL', '"https://n-wrappytest.newsupplytech.com"'
+            buildConfigField 'String', 'ROOT_URL', '"https://27.50.36.67:4333"'
 //            buildConfigField 'String', 'ROOT_URL', '"https://192.168.133.198"'
-            buildConfigField 'String', 'DOMAIN', '"ejabberd-test.newsupplytech.com"'
+            buildConfigField 'String', 'DOMAIN', '"ejabberd_test.newsupplytech.com"'
 //            buildConfigField 'String', 'DOMAIN', '"xmpp-test.newsupplytech.com"'
         }
     }
