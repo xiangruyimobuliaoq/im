@@ -55,12 +55,12 @@ public class WelcomActivity extends BaseActivity {
                 R.mipmap.intro1,
                 R.mipmap.intro2,
                 R.mipmap.intro3,
-                R.mipmap.intro4,
-                R.mipmap.intro5,
+//                R.mipmap.intro4,
+//                R.mipmap.intro5,
                 R.mipmap.intro6,
                 R.mipmap.intro7,
                 R.mipmap.intro8,
-                R.mipmap.intro9,
+//                R.mipmap.intro9,
                 R.mipmap.intro10,
                 R.mipmap.intro11
         };
@@ -68,12 +68,12 @@ public class WelcomActivity extends BaseActivity {
                 R.string.Page1Titlenull,
                 R.string.Page2Title,
                 R.string.Page3Title,
-                R.string.Page4Title,
-                R.string.Page5Title,
+//                R.string.Page4Title,
+//                R.string.Page5Title,
                 R.string.Page6Title,
                 R.string.Page7Title,
                 R.string.Page8Title,
-                R.string.Page9Title,
+//                R.string.Page9Title,
                 R.string.Page10Title,
                 R.string.Page11Title
         };
@@ -81,12 +81,12 @@ public class WelcomActivity extends BaseActivity {
                 R.string.Page1Message,
                 R.string.Page2Message,
                 R.string.Page3Message,
-                R.string.Page4Message,
-                R.string.Page5Message,
+//                R.string.Page4Message,
+//                R.string.Page5Message,
                 R.string.Page6Message,
                 R.string.Page7Message,
                 R.string.Page8Message,
-                R.string.Page9Message,
+//                R.string.Page9Message,
                 R.string.Page10Message,
                 R.string.Page11Message
         };
@@ -193,7 +193,7 @@ public class WelcomActivity extends BaseActivity {
                 if (startPressed) {
                     return;
                 }
-                startPressed = true;
+//                startPressed = true;
                 overlay(LoginActivity.class);
             }
         });
@@ -219,7 +219,7 @@ public class WelcomActivity extends BaseActivity {
     private class WelcomAdapter extends PagerAdapter {
         @Override
         public int getCount() {
-            return 11;
+            return 8;
         }
 
         @Override

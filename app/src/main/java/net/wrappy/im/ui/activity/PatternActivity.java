@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.model.Register;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.tornado.android.patternlock.PatternUtils;
@@ -26,6 +28,8 @@ import me.tornado.android.patternlock.SetPatternActivity;
  */
 public class PatternActivity extends SetPatternActivity {
 
+    List<Integer> list = new ArrayList();
+    private static final String TAG = "PatternActivity";
     private String mIntentType;
     private Register mRegister;
 
@@ -45,10 +49,21 @@ public class PatternActivity extends SetPatternActivity {
     @Override
     protected void onSetPattern(List<PatternView.Cell> pattern) {
         Intent intent;
-        switch (mIntentType) {
+        String ss = "";
+        list.clear();
+        String str = PatternUtils.patternToString(pattern);
+        for (int i = 0; i <str.length() ; i++) {
+            list.add(Integer.parseInt(str.substring(i,i+1)) + 1);
+        }
+        for (int i = 0; i <list.size() ; i++) {
+            ss = ss + list.get(i);
+        }
+        Log.e(TAG, "九宫格数据: " + ss);
+                switch (mIntentType) {
             case ConsUtils.INTENT_CHECK:
                 intent = new Intent();
-                intent.putExtra("pattern", PatternUtils.patternToString(pattern));
+//                intent.putExtra("pattern", PatternUtils.patternToString(pattern));
+                intent.putExtra("pattern", ss);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

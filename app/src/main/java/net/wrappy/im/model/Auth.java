@@ -30,9 +30,11 @@ public class Auth implements Serializable {
     public int expires_in;
     public String scope;
     public String encryptionkey;
-    public Account account =new Account();
+    public Account account = new Account();
     public String jti;
     public String patternPassword;
+    public String error_description;
+    public String error;
 
     public static class Account implements Serializable {
         /**

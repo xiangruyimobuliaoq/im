@@ -158,7 +158,8 @@ public class MainActivity extends BaseActivity {
             tab = mTabLayout.newTab();
             mTabLayout.addTab(tab);
         }
-        createTabIcons(0, R.mipmap.ic_menu_normal, getString(R.string.tab_menu_menu));
+//        createTabIcons(0, R.mipmap.ic_menu_normal, getString(R.string.tab_menu_menu));
+        createTabIcons(0, R.mipmap.ic_promotion, getString(R.string.tab_menu_menu));
         createTabIcons(1, R.mipmap.ic_menu_conversation_normal, getString(R.string.tab_menu_conversation));
         createTabIcons(2, R.mipmap.ic_promotion, getString(R.string.tab_menu_promotion));
         createTabIcons(3, R.mipmap.ic_menu_info_normal, getString(R.string.tab_menu_my_page));

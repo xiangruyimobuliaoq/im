@@ -39,6 +39,12 @@ public class ConsUtils {
     public static String VALIDATE_PHONE = "validate_phone";
     public static String VALIDATE_PASSWORD = "validate_password";
     public static String SECURITY_QUESTIONS = "security_questions";
+    public static String ACCOUNT_STATUS = "account_status";
+
+
+    public static String NORMAL = "NORMAL";
+    public static String NOT_EXIST = "NOT_EXIST";
+    public static String LOCKED = "LOCKED";
 
     public static String getAccestoken() {
         return SpUtil.getString(USERINFO, ACCESSTOKEN, null);

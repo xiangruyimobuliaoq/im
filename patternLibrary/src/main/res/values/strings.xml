@@ -22,6 +22,8 @@
     <string name="pl_wrong_pattern">Wrong pattern, please retry</string>
     <string name="pl_error_pattern_too_short">Minimum 4 characters in length</string>
 
+    <string name="Profile">Profile</string>
+    <string name="registration">Registration</string>
     <string name="pl_access_pattern_start">Pattern started</string>
     <string name="pl_access_pattern_cleared">Pattern cleared</string>
     <string name="pl_access_pattern_cell_added">Cell added</string>

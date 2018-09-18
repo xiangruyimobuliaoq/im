@@ -7,6 +7,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,6 +35,10 @@ import butterknife.BindView;
  */
 @Layout(layoutId = R.layout.activity_security_question)
 public class RegistrationSecurityQuestionActivity extends BaseActivity {
+    @BindView(R.id.back)
+    ImageView back;
+    @BindView(R.id.title)
+    TextView title;
     @BindView(R.id.btnQuestionComplete)
     Button btnQuestionComplete;
     @BindView(R.id.txtSecurityTitle)
@@ -50,6 +55,7 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        title.setText(getResources().getString(R.string.registration));
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
         getListQuestion();
         btnQuestionComplete.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +74,7 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                             String answer = editTextView.getText().toString().trim();
                             if (stringQuestions.size() > 0) {
                                 if (stringQuestions.contains(question)) {
+                                    //您不能选择相同的安全问题
                                     errorString = getString(R.string.error_question_duplicate);
                                     break;
                                 }
@@ -78,10 +85,10 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                                 break;
                             }
 
-                            if (answer.length() > 8) {
-                                errorString = String.format(getString(R.string.error_min_length_answer), (i + 1));
-                                break;
-                            }
+//                            if (answer.length() > 8) {
+//                                errorString = String.format(getString(R.string.error_min_length_answer), (i + 1));
+//                                break;
+//                            }
 
                             if (answer.length() < 3) {
                                 errorString = String.format(getString(R.string.error_min_length_answer), (i + 1));
@@ -89,11 +96,12 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                             }
 
                             if (strings.size() > 0) {
-                                if (strings.contains(answer)) {
+                                if (strings.contains(answer)) {//你的答案是重复的
                                     errorString = getString(R.string.error_duplicate_answer);
                                     break;
                                 }
                             }
+
                             strings.add(answer);
                             stringQuestions.add(question);
                             String code = null;
@@ -107,7 +115,7 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                             securityQuestions.add(questions);
                         }
                         if (!errorString.isEmpty()) {
-                            PopupUtils.showOKDialog(RegistrationSecurityQuestionActivity.this, "tips", errorString);
+                            PopupUtils.showOKDialog(RegistrationSecurityQuestionActivity.this, "", errorString);
                             return;
                         }
                         mRegister.securityQuestions = securityQuestions;
@@ -119,6 +127,12 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

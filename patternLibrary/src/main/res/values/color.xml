@@ -3,5 +3,7 @@
         <color name="regular">#EA657C</color>
         <color name="error">#E80303</color>
         <color name="success">#EA657C</color>
+        <color name="background_gainsboro">#f2f2f2</color>
+        <color name="menu_text_active">#ea657c</color>
 
 </resources>

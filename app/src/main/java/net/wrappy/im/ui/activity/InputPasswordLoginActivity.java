@@ -2,9 +2,11 @@ package net.wrappy.im.ui.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -14,6 +16,7 @@ import net.wrappy.im.BaseActivity;
 import net.wrappy.im.R;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.model.Auth;
+import net.wrappy.im.ui.fragment.ForgetPasswordQuestionFragment;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
@@ -31,6 +34,11 @@ import butterknife.BindView;
  */
 @Layout(layoutId = R.layout.activity_inputpasswordlogin)
 public class InputPasswordLoginActivity extends BaseActivity {
+    private static final String TAG = "InputPasswordLoginActiv";
+    @BindView(R.id.back)
+    protected ImageView back;
+    @BindView(R.id.title)
+    protected TextView title;
     @BindView(R.id.btnlogin)
     protected Button btnLogin;
     @BindView(R.id.btnforgetpass)
@@ -42,6 +50,7 @@ public class InputPasswordLoginActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        title.setText(getResources().getString(R.string.login).toUpperCase());
         mUsername = getIntent().getStringExtra(ConsUtils.USERNAME);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +67,12 @@ public class InputPasswordLoginActivity extends BaseActivity {
                 overlay(ForgetPasswordActivity.class, bundle);
             }
         });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void login() {
@@ -66,11 +81,18 @@ public class InputPasswordLoginActivity extends BaseActivity {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
-                Auth auth = new Gson().fromJson(response.body(), Auth.class);
+                Log.e(TAG, "success: " + response.body().toString() );
+                Auth auth = new Gson().fromJson(response.body().toString(), Auth.class);
                 if (null != auth.account) {
+//                    if ("invalid_grant".equals(auth.error)){
+                    if (auth.error != null){
+                        showOKDialog(auth.error_description);
+                    }else {
                     startAndClearAll(MainActivity.class);
+                    }
                 } else {
-                    toast("login failed");
+                    showOKDialog("login failed");
+//                    toast("login failed");
                 }
             }
         });
@@ -79,7 +101,8 @@ public class InputPasswordLoginActivity extends BaseActivity {
     private void check() {
         mPwd = edtpassword.getText().toString().trim();
         if (TextUtils.isEmpty(mPwd)) {
-            toast("password is empty");
+//            toast("password is empty");
+            showOKDialog("password is empty");
             return;
         }
         login();

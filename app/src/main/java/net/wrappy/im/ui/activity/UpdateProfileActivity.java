@@ -48,6 +48,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 @Layout(layoutId = R.layout.activity_updateprofile)
 public class UpdateProfileActivity extends BaseActivity {
+    @BindView(R.id.back)
+    protected ImageView back;
+    @BindView(R.id.title)
+    protected TextView title;
     @BindView(R.id.btnProfileComplete)
     protected Button btnProfileComplete;
     @BindView(R.id.edProfileNickname)
@@ -60,7 +64,7 @@ public class UpdateProfileActivity extends BaseActivity {
     protected Spinner spinnerProfileGender;
 
     @BindView(R.id.imgPhotoAvatar)
-    CircleImageView imgAvatar;
+    CircleImageView imgAvatar;//头像
     @BindView(R.id.imgProfileHeader)
     ImageView imgHeader;
     @BindView(R.id.btnProfileCameraHeader)
@@ -76,6 +80,7 @@ public class UpdateProfileActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        title.setText(getResources().getString(R.string.Profile));
         btnCameraAvatar.setVisibility(View.VISIBLE);
         btnCameraHeader.setVisibility(View.VISIBLE);
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
@@ -153,17 +158,29 @@ public class UpdateProfileActivity extends BaseActivity {
                 }).show();
             }
         });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void check() {
         mNickname = edProfileNickname.getText().toString().trim();
         email = edProfileEmail.getText().toString().trim();
         if (TextUtils.isEmpty(mNickname)) {
-            toast("Nickname is empty");
+            showOKDialog("Nickname is empty");
+//            toast("Nickname is empty");
             return;
         }
         if (TextUtils.isEmpty(email)) {
-            toast("email is empty");
+            showOKDialog("email is empty");
+//            toast("email is empty");
+            return;
+        }
+        if (mRegister.extendedInfo.avatar == null){
+            showOKDialog("Please upload your head");
             return;
         }
         validateEmail();
@@ -196,11 +213,12 @@ public class UpdateProfileActivity extends BaseActivity {
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.VALIDATE_EMAIL.Response json = new Gson().fromJson(response.body(), AccountHelper.VALIDATE_EMAIL.Response.class);
-                toast(json.message);
+//                toast(json.message);
                 if (json.code == 1000) {
                     startAndClearAll(LoginActivity.class);
                 } else {
                     AppFuncs.dismissProgressWaiting();
+                    showOKDialog(json.message);
                 }
             }
         });
@@ -211,11 +229,11 @@ public class UpdateProfileActivity extends BaseActivity {
         super.onResultPickerImage(isAvatar, data, isSuccess);
         if (isAvatar) {
             uriAvatar = UCrop.getOutput(data);
-            if (uriAvatar != null) {
+            if (uriAvatar != null) {//如果选择了头像
                 try {
                     String base64 = UIUtil.bitmapToBase64(MediaStore.Images.Media.getBitmap(getContentResolver(), uriAvatar));
                     imgAvatar.setImageURI(uriAvatar);
-                    mRegister.extendedInfo.avatar = base64;
+                    mRegister.extendedInfo.avatar = base64; //头像
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -226,7 +244,7 @@ public class UpdateProfileActivity extends BaseActivity {
                 try {
                     String base64 = UIUtil.bitmapToBase64(MediaStore.Images.Media.getBitmap(getContentResolver(), uriHeader));
                     imgHeader.setImageURI(uriHeader);
-                    mRegister.extendedInfo.backGroundImage = base64;
+                    mRegister.extendedInfo.backGroundImage = base64;//背景
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

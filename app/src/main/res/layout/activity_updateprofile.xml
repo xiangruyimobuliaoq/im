@@ -5,6 +5,7 @@
               android:background="#f2f2f2"
               android:orientation="vertical">
 
+    <include layout="@layout/layout_title"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -72,7 +73,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@null"
-                            android:hint="@string/fullname"
+                            android:hint="@string/fullname_"
                             android:imeOptions="actionNext"
                             android:inputType="textNoSuggestions"
                             android:singleLine="true"
@@ -115,7 +116,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="5dp"
                                 android:background="@null"
-                                android:hint="@string/mobile_phone"
+                                android:hint="@string/mobile_phone_"
                                 android:imeOptions="actionNext"
                                 android:singleLine="true"
                                 android:textColorHint="#bebebe"
@@ -150,7 +151,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@null"
-                            android:hint="@string/email"
+                            android:hint="@string/email_tile_"
                             android:imeOptions="actionNext"
                             android:inputType="textEmailAddress"
                             android:singleLine="true"
@@ -160,6 +161,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"

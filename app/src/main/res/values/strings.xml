@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">Wrappy</string>
 
+
+    <string name="account_verification">Account Verification</string>
+    <string name="Profile">Profile</string>
+    <string name="forgot_password">ForgotPassword</string>
+    <string name="illegal_email">Illegal email</string>
+    <string name="please_input_the_correct_cell_phone_number">Please input the correct cell phone number.</string>
     <string name="StartMessaging">Start Messaging</string>
     <string name="create_an_account">Register</string>
     <string name="action_done">Done</string>
+    <string name="next">Next</string>
     <string name="lock_screen_confirm_passphrase">Confirm Password</string>
     <string name="add_people">Add People</string>
 
@@ -31,6 +38,7 @@
     <string name="Page10Message">Currencies can be used anywhere,\nfrom any country.</string>
     <string name="Page11Message">A pioneer in an innovative\n&amp; constantly evolving era.</string>
 
+    <string name="Forget_username">Forget username ?</string>
     <string name="id_or_username">Input the username</string>
     <string name="forget_password">Reset Password</string>
     <string name="login">Login</string>
@@ -120,6 +128,9 @@
     <string name="vertify_title_noti">Please input your phone number here</string>
     <string name="send_again">Resend passcode</string>
     <string name="answer_secret_question">Answer your secret question</string>
+    <string name="Chose_your_security_question">Chose your security question</string>
+    <string name="Question1">Question1</string>
+    <string name="Question2">Question2</string>
     <string name="your_answer">Your Answer</string>
     <string name="btn_next">Next</string>
     <string name="input_your_email">Enter your email address to reset password</string>
@@ -127,6 +138,7 @@
     <string name="reset_password">Reset Password</string>
     <string name="new_group">New Group</string>
     <string name="about_us">About us</string>
+    <string name="please_enter_the_email_and_cell_phone_number">Please enter the Email and cell phone number</string>
     <string name="faq">FAQ</string>
     <string name="logout">Logout</string>
     <string name="remove">Remove</string>
@@ -135,7 +147,9 @@
     <string name="all">All</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
-    <string name="mobile_phone">Mobile Phone</string>
+    <string name="mobile_phone">Mobile Phone*</string>
+    <string name="mobile_phone_">Mobile Phone</string>
+    <string name="phone">phone</string>
     <string name="gender">Gender</string>
     <string name="referral">Referral</string>
     <string name="referral_hint">Referral code</string>
@@ -177,7 +191,8 @@
     <string name="you_sent_sticker">You sent a sticker</string>
     <string name="message_sticker">Sticker message</string>
     <string name="user_sent_sticker">%1$s sent a sticker</string>
-    <string name="tab_menu_menu">Menu</string>
+    <!--<string name="tab_menu_menu">Menu</string>-->
+    <string name="tab_menu_menu">Promotion</string>
     <string name="tab_menu_conversation">Chat</string>
     <string name="tab_menu_promotion">Promotion</string>
     <string name="tab_menu_my_page">My page</string>
@@ -204,7 +219,9 @@
     <string name="cancel_and_home">Cancel this step and return to Login screen?</string>
     <string name="invite_friends_text">Invite Friend</string>
     <string name="share_app_text">Let me recommend you this application</string>
-    <string name="email_tile">Email *</string>
+    <string name="email_tile">Email* </string>
+    <string name="email_tile_">Email </string>
+    <!--<string name="email_tile">Email *</string>-->
     <string name="logout_noti">Do you want to logout of this device?</string>
     <string name="share_title">Choose sharing method</string>
     <string name="referral_text">Enter your referral code (optional)</string>
@@ -221,12 +238,15 @@
 
     <string name="create_new_username">Create a username</string>
     <string name="create_new_password">Create a password</string>
+    <string name="input_your_confidential_info">Input Your Confidential Info</string>
     <string name="input_your_password">Input your Password</string>
-    <string name="input_password">Input  new password</string>
+    <string name="input_password">Input new password</string>
     <string name="input_new_password">Input your new password</string>
     <string name="input_new_username">Input your new username</string>
+    <string name="input_username">Input your username</string>
     <string name="input_repeat_password">Confirm new password</string>
-    <string name="fullname">Nickname</string>
+    <string name="fullname">Nickname*</string>
+    <string name="fullname_">Nickname</string>
     <string name="info">Info</string>
     <string name="wrong_format_password">Password must have at least 8 characters. Inlcluding 1 Uppercase, 1 lowercase and 1 number.</string>
     <string name = "password_is_empty">Password cannot be empty</string>
@@ -241,6 +261,7 @@
     <string name="local_time_format">MMM dd, yyyy</string>
     <string name="promotion_format">%1$s from <b>%2$s</b> level (%3$s)</string>
     <string name="promotion_history_description">More than level 2 aren\'t visible</string>
+    <string name="forgot_username">Forgot Username</string>
 
     <string-array name="profile_gender_display">
         <item>Female</item>

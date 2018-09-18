@@ -77,6 +77,12 @@ public class OkUtil {
                 });
     }
 
+    /**
+     * 没有登录之前调用此方法
+     * @param url
+     * @param json
+     * @param callback
+     */
     public static void publicPost(final String url, final String json, final Callback callback) {
         if (TextUtils.isEmpty(ConsUtils.getAdminAccestoken()) || TextUtils.isEmpty(ConsUtils.getAdminRefreshtoken()) || TextUtils.isEmpty(ConsUtils.getAdminTokenType())) {
             HttpHeaders headers = new HttpHeaders();
@@ -149,7 +155,7 @@ public class OkUtil {
                         }
                     });
         } else {
-            OkGo.<String>post(url).execute(new StringCallback() {
+            OkGo.<String>get(url).execute(new StringCallback() {
                 @Override
                 public void onSuccess(Response<String> response) {
                     if (response.body().contains("{\"error\":\"unauthorized\",")) {

@@ -10,6 +10,7 @@ import android.view.View;
 import com.yalantis.ucrop.UCrop;
 
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.PopupUtils;
 import net.wrappy.im.util.ToastHelper;
 
 
@@ -137,6 +138,9 @@ public abstract class BaseFragment extends BaseLazyFragment {
 
     public final String TAG = this.getClass().getSimpleName();
 
+    public void showOKDialog(String msg){
+        PopupUtils.showCustomDialog(mContext,"",msg,R.string.ok,-1,null,null);
+    }
 
     public void toast(String msg) {
         ToastHelper.showToast(msg, getActivity());

@@ -5,18 +5,29 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import net.wrappy.im.App;
 import net.wrappy.im.R;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import io.michaelrocks.libphonenumber.android.NumberParseException;
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil;
+import io.michaelrocks.libphonenumber.android.Phonenumber;
 
 /**
  * Created by hp on 12/21/2017.
  */
 
 public class Utils {
+
+    private static final String TAG = "Utils";
 
     public static int getContrastColor(int colorIn) {
         double y = (299 * Color.red(colorIn) + 587 * Color.green(colorIn) + 114 * Color.blue(colorIn)) / 1000;
@@ -95,4 +106,40 @@ public class Utils {
             return false;
         }
     }
+
+
+
+    /**
+     * 判断邮箱是否合法
+     * @param email
+     * @return
+     */
+    public static boolean isEmail(String email){
+        if (null==email || "".equals(email)) {
+            return false;
+        }
+        String strPattern = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
+        Pattern p = Pattern.compile(strPattern);
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    /**
+     * 根据区号判断是否是正确的电话号码
+     * @param phoneNumber :带国家码的电话号码
+     * @param countryCode :默认国家码
+     * return ：true 合法  false：不合法
+     */
+    public static boolean isPhoneNumberValid(String phoneNumber, String countryCode) {
+        Log.e(TAG, "isPhoneNumberValid: " + phoneNumber+"/"+countryCode);
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.createInstance(App.app);
+        try{
+            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumber, countryCode);
+            return phoneUtil.isValidNumber(numberProto);
+        }catch (NumberParseException e){
+            e.printStackTrace();
+            System.err.println("isPhoneNumberValid NumberParseException was thrown: " + e.toString());
+        } return false;
+    }
+
 }

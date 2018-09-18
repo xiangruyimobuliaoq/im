@@ -25,9 +25,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+
 import net.wrappy.im.ui.view.Layout;
+import net.wrappy.im.util.ManagementAllActivity;
+
 import java.lang.reflect.Field;
 import butterknife.ButterKnife;
 
@@ -70,6 +76,7 @@ public abstract class BaseLazyFragment extends Fragment {
         TAG_LOG = this.getClass().getSimpleName();
 //        AppService.getInstance().getBus().register(this);
         mTaskId = getActivity().getTaskId();
+        ManagementAllActivity.addActivity(getActivity());
     }
 
 
@@ -113,6 +120,7 @@ public abstract class BaseLazyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ManagementAllActivity.removeActivity(getActivity());
 //        AppService.getInstance().getBus().unregister(this);
     }
 
@@ -262,6 +270,53 @@ public abstract class BaseLazyFragment extends Fragment {
         ViewGroup view = (ViewGroup) getActivity().getWindow().getDecorView();
         Snackbar.make(view.getChildAt(0), content, Snackbar.LENGTH_LONG)
                 .setAction("关闭", null).show();
+    }
+
+
+
+    /**
+     * 点击空白处除了EditText之外隐藏软键盘
+     * @param ev
+     * @return
+     */
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getActivity().getCurrentFocus();
+            if (isShouldHideInput(v, ev)) {
+
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+            return super.getActivity().dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getActivity().getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return getActivity().onTouchEvent(ev);
+    }
+
+
+    public  boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] leftTop = { 0, 0 };
+            //获取输入框当前的location位置
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                // 点击的是输入框区域，保留点击EditText的事件
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
 

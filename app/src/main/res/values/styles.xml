@@ -79,6 +79,9 @@
         <item name="android:textColor">#ea657c</item>
         <item name="android:textSize">16sp</item>
     </style>
+    <style name="AppText04">
+        <item name="android:textSize">16sp</item>
+    </style>
 
     <style name="AppText_Default_Light">
         <item name="android:textSize">16sp</item>

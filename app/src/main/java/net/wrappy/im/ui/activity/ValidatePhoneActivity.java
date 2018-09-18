@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
+import net.wrappy.im.util.Utils;
 
 import butterknife.BindView;
 
@@ -38,6 +40,10 @@ import butterknife.BindView;
 
 @Layout(layoutId = R.layout.activity_validatephone)
 public class ValidatePhoneActivity extends BaseActivity {
+    @BindView(R.id.back)
+    ImageView back;
+    @BindView(R.id.title)
+    TextView title;
     @BindView(R.id.txt_pin_entry)
     Pinview txtPin;
     @BindView(R.id.lnVerifyContainer)
@@ -56,6 +62,7 @@ public class ValidatePhoneActivity extends BaseActivity {
     @Override
     protected void init() {
         AppFuncs.dismissKeyboard(this);
+        title.setText(getResources().getString(R.string.account_verification));
         picker.changeDefaultLanguage(CountryCodePicker.Language.ENGLISH);
         picker.setAutoDetectedCountry(true);
         btnVerifyCheck.setOnClickListener(new View.OnClickListener() {
@@ -63,12 +70,23 @@ public class ValidatePhoneActivity extends BaseActivity {
             public void onClick(View v) {
                 String value = txtPin.getValue();
                 mPhone = edVerifyPhone.getText().toString().trim();
-                if (TextUtils.isEmpty(value)) {
-                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "tips", "Please input the SNS code");
+
+                if (TextUtils.isEmpty(mPhone)) {
+                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "", "Please input the phone number");
                     return;
                 }
-                if (TextUtils.isEmpty(mPhone)) {
-                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "tips", "Please input the phone number");
+                if (!Utils.isPhoneNumberValid(picker.getSelectedCountryCodeWithPlus() + mPhone,mPhone)){
+                    showOKDialog(getResources().getString(R.string.please_input_the_correct_cell_phone_number));
+                    return;
+                }
+
+                if (TextUtils.isEmpty(value)) {
+                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "", "Please input the SNS code");
+                    return;
+                }
+
+                if (value.length() != 5){
+                    showOKDialog("Please enter 5 bit verification code.");
                     return;
                 }
                 validateCode(value, mPhone);
@@ -79,11 +97,21 @@ public class ValidatePhoneActivity extends BaseActivity {
             public void onClick(View v) {
                 mPhone = edVerifyPhone.getText().toString().trim();
                 if (TextUtils.isEmpty(mPhone)) {
-                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "tips", "Please input the phone number");
+                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "", "Please input the phone number");
                     return;
                 }
                 mCountryCode = picker.getSelectedCountryCodeWithPlus();
+                if (!Utils.isPhoneNumberValid(mCountryCode + mPhone,mPhone)){
+                    showOKDialog(getResources().getString(R.string.please_input_the_correct_cell_phone_number));
+                    return;
+                }
                 validatePhone(mCountryCode, mPhone);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -100,7 +128,7 @@ public class ValidatePhoneActivity extends BaseActivity {
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.Response res = new Gson().fromJson(response.body(), AccountHelper.Response.class);
-                toast(res.message);
+//                toast(res.message);
                 if (res.code == 1000) {
                     Bundle bundle = new Bundle();
                     bundle.putString(ConsUtils.INTENT, ConsUtils.INTENT_REGISTER);
@@ -109,6 +137,8 @@ public class ValidatePhoneActivity extends BaseActivity {
                     bundle.putSerializable(ConsUtils.REGISTRATION, register);
                     overlay(PatternActivity.class, bundle);
                     AppFuncs.dismissKeyboard(ValidatePhoneActivity.this);
+                }else {
+                    showOKDialog(res.message);
                 }
             }
         });
@@ -127,7 +157,8 @@ public class ValidatePhoneActivity extends BaseActivity {
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.Response res = new Gson().fromJson(response.body(), AccountHelper.Response.class);
-                toast(res.message);
+//                toast(res.message);
+                showOKDialog(res.message);
             }
         });
     }

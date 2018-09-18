@@ -37,6 +37,7 @@ import net.wrappy.im.model.SaveUserFile;
 import net.wrappy.im.ui.activity.PatternActivity;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.NotificationCenter;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
@@ -159,6 +160,17 @@ public class ProfileFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
+                PopupUtils.showCustomDialog(mContext, "", "Whether or not to withdraw from", R.string.ok, R.string.cancel, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (v.getId() == R.id.btnOk){
+
+                            ManagementAllActivity.finishAllActivity();
+                        }
+
+
+                    }
+                }, null);
             }
         });
     }
@@ -176,7 +188,9 @@ public class ProfileFragment extends BaseFragment {
                 public void success(Response<String> response) {
                     Log.e("123", response.body());
                     AccountHelper.Response json = new Gson().fromJson(response.body(), AccountHelper.Response.class);
-                    toast(json.message);
+//                    toast(json.message);
+                    showOKDialog(json.message);
+
                     onDataEditChange(false);
                 }
 
@@ -287,7 +301,8 @@ public class ProfileFragment extends BaseFragment {
                         @Override
                         public void success(Response<String> response) {
                             AccountHelper.Response json = new Gson().fromJson(response.body(), AccountHelper.Response.class);
-                            toast(json.message);
+//                            toast(json.message);
+                            showOKDialog(json.message);
                         }
                     });
                 } catch (Exception e) {
@@ -308,7 +323,8 @@ public class ProfileFragment extends BaseFragment {
                         @Override
                         public void success(Response<String> response) {
                             AccountHelper.Response json = new Gson().fromJson(response.body(), AccountHelper.Response.class);
-                            toast(json.message);
+//                            toast(json.message);
+                            showOKDialog(json.message);
                         }
                     });
                 } catch (Exception e) {

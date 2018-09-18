@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
  */
 
 public class PopupUtils {
+    private static final String TAG = "PopupUtils";
     private static AlertDialog dialog;
 
     public static void getSelectionDialog(Context context, String title, ArrayAdapter<String> languagesAdapter, DialogInterface.OnClickListener listener) {
@@ -85,7 +87,6 @@ public class PopupUtils {
         try {
             View dialogView = getView(context, R.layout.custom_alert_dialog);
             AlertDialog.Builder builder = getBuilderDialog(context, dialogView, isCancelable);
-
             dialog = builder.show();
             handleButtons(dialog, dialogView, resOK, resCancel, onOkListener, onCancelListener);
             handleTexts(dialogView, title, message);
@@ -136,7 +137,9 @@ public class PopupUtils {
                     dialog.dismiss();
                 }
             });
-        } else btnOk.setVisibility(View.GONE);
+        } else {
+            btnOk.setVisibility(View.GONE);
+        }
         if (resCancel > 0) {
             btnCancel.setText(resCancel);
             btnCancel.setVisibility(View.VISIBLE);
@@ -148,7 +151,9 @@ public class PopupUtils {
                     dialog.dismiss();
                 }
             });
-        } else btnCancel.setVisibility(View.GONE);
+        } else {
+            btnCancel.setVisibility(View.GONE);
+        }
     }
 
     public static void showCustomInputPasswordDialog(Context context, String message, int resOK, int resCancel, View.OnClickListener onOkListener, View.OnClickListener onCancelListener) {

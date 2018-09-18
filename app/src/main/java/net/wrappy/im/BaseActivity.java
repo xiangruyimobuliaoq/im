@@ -1,6 +1,7 @@
 package net.wrappy.im;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,6 +24,8 @@ import com.yalantis.ucrop.UCrop;
 
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
+import net.wrappy.im.util.PopupUtils;
 import net.wrappy.im.util.ToastHelper;
 
 import butterknife.ButterKnife;
@@ -45,6 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public static final int REQUEST_PERMISSION_PICKER_AVATAR = 507;
     public static final int REQUEST_PERMISSION_PICKER_BANNER = 508;
     private Toast mToast;
+    public Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,10 +65,22 @@ public abstract class BaseActivity extends AppCompatActivity {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
+        mContext = this;
+        ManagementAllActivity.addActivity(BaseActivity.this);
         init();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ManagementAllActivity.removeActivity(BaseActivity.this);
+    }
+
     protected abstract void init();
+
+    public void showOKDialog(String msg){
+        PopupUtils.showCustomDialog(mContext,"",msg,R.string.ok,-1,null,null);
+    }
 
     public void toast(String msg) {
         ToastHelper.showToast(msg, this);
@@ -269,6 +286,53 @@ public abstract class BaseActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+
+    /**
+     * 点击空白处除了EditText之外隐藏软键盘
+     * @param ev
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (isShouldHideInput(v, ev)) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+
+
+    public  boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] leftTop = { 0, 0 };
+            //获取输入框当前的location位置
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom) {
+                // 点击的是输入框区域，保留点击EditText的事件
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

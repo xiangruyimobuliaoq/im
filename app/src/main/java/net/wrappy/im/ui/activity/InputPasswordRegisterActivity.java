@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.model.Response;
@@ -34,8 +36,13 @@ import butterknife.BindView;
  */
 @Layout(layoutId = R.layout.activity_inputpasswordregister)
 public class InputPasswordRegisterActivity extends BaseActivity {
+    private static final String TAG = "InputPasswordRegisterAc";
     @BindView(R.id.btcreatepassword)
     Button mBtnLogin;
+    @BindView(R.id.back)
+    ImageView back;
+    @BindView(R.id.title)
+    TextView title;
     @BindView(R.id.edtpassword)
     EditText edtpassword;
     @BindView(R.id.edtusername)
@@ -50,7 +57,7 @@ public class InputPasswordRegisterActivity extends BaseActivity {
     @Override
     protected void init() {
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
-
+        title.setText(getResources().getString(R.string.registration));
         showHidePassword(edtpassword, false);
         showHidePassword(edtconfirmpassword, false);
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +72,12 @@ public class InputPasswordRegisterActivity extends BaseActivity {
 //                overlay(RegistrationSecurityQuestionActivity.class, bundle);
             }
         });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void checkFromServer() {
@@ -76,6 +89,7 @@ public class InputPasswordRegisterActivity extends BaseActivity {
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
+                Log.e(TAG, "success: " + response.body().toString());
                 AppFuncs.dismissProgressWaiting();
                 VALIDATE_PASSWORD.Response json = new Gson().fromJson(response.body(), VALIDATE_PASSWORD.Response.class);
                 if (json.code == 1000) {
@@ -85,30 +99,43 @@ public class InputPasswordRegisterActivity extends BaseActivity {
                     bundle.putSerializable(ConsUtils.REGISTRATION, mRegister);
                     overlay(RegistrationSecurityQuestionActivity.class, bundle);
                 } else if (json.code == -1020) {
-                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "tips", json.message);
+                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "", json.message);
                 } else {
                     String s = "";
                     for (String ss : json.data
                             ) {
                         s += ss + ",";
                     }
-                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "tips", s);
+                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "", s);
                 }
             }
+            @Override
+            public void error(Response<String> response) {
+                String s = response.body().toString();
+
+            }
+
         });
     }
 
     private void check() {
         if (TextUtils.isEmpty(mun) || !mun.matches("^[a-zA-Z0-9]{6,48}$")) {
-            toast("User name is wrong");
+            if (mun.length() < 6 || mun.length() > 30){
+                showOKDialog("check user name format, 6-30 letters, numbers, beginning with letters.");
+                return;
+            }
             return;
         }
         if (TextUtils.isEmpty(mPwd)) {
-            toast("Password is empty");
+            showOKDialog("Password is empty");
             return;
         }
-        if (!mPwd.equals(mPwd2)) {
-            toast("Password is not the same");
+        if (mPwd.length() < 8){
+            showOKDialog("The password is at least 8 bits.");
+            return;
+        }
+        if (!mPwd.equals(mPwd2)){
+            showOKDialog("The password entered two times is inconsistent.");
             return;
         }
         checkFromServer();

@@ -4,11 +4,11 @@
  */
 
 package me.tornado.android.patternlock;
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +17,8 @@ public class BasePatternActivity extends AppCompatActivity {
     private static final int CLEAR_PATTERN_DELAY_MILLI = 2000;
 
     protected TextView mMessageText;
+    protected TextView title;
+    protected ImageView back;
     protected PatternView mPatternView;
     protected LinearLayout mButtonContainer;
     protected Button mLeftButton;
@@ -38,6 +40,9 @@ public class BasePatternActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.pl_base_pattern_activity);
+        back = (ImageView) findViewById(R.id.back);
+        title = (TextView) findViewById(R.id.title);
+        title.setText(getResources().getString(R.string.registration).toUpperCase());
         mMessageText = (TextView) findViewById(R.id.pl_message_text);
         mMessageTextError = (TextView) findViewById(R.id.pl_message_text_error);
         mPatternView = (PatternView) findViewById(R.id.pl_pattern);
@@ -47,6 +52,13 @@ public class BasePatternActivity extends AppCompatActivity {
         bottomText = (TextView) findViewById(R.id.bottomText);
         view = (View) findViewById(R.id.viewspan);
       //  mCountdownText = (TextView) findViewById(R.id.pl_countdown_text);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     protected void removeClearPatternRunnable() {

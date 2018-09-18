@@ -5,6 +5,15 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
+
+    <include layout="@layout/layout_title"/>
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/please_enter_the_email_and_cell_phone_number"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,28 +22,38 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <TextView
-            style="@style/AppText03"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/email_tile" />
+            android:orientation="horizontal">
+            <TextView
+                style="@style/AppText04"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email_tile" />
+
+            <EditText
+                android:layout_marginLeft="50dp"
+                android:id="@+id/edProfileEmail"
+                style="@style/AppText02"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:textColorHint="#bebebe"
+                android:textSize="14sp" />
+        </LinearLayout>
+
 
         <View
+            android:visibility="gone"
             style="@style/divider"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp" />
 
-        <EditText
-            android:id="@+id/edProfileEmail"
-            style="@style/AppText02"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:hint="@string/email"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:textColorHint="#bebebe"
-            android:textSize="14sp" />
+
 
     </LinearLayout>
     <LinearLayout
@@ -46,6 +65,7 @@
         android:padding="10dp">
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/txtProfileMobile"
             style="@style/AppText03"
             android:layout_width="wrap_content"
@@ -53,6 +73,7 @@
             android:text="@string/mobile_phone" />
 
         <View
+            android:visibility="gone"
             style="@style/divider"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp" />
@@ -62,19 +83,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/spnProfileCountryCodes"
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/picker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <EditText
                 android:id="@+id/edProfilePhone"
+                android:inputType="number"
+                android:hint="@string/phone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:background="@null"
-                android:hint="@string/mobile_phone"
                 android:imeOptions="actionNext"
                 style="@style/EditText_Phone"
                 android:textColorHint="#bebebe"

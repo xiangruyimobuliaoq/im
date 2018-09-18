@@ -34,6 +34,7 @@
             android:src="@mipmap/text_1"/>
 
         <EditText
+            android:text="daiyunlongkkll"
             android:id="@+id/edtUserMame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,14 +67,15 @@
                 android:layout_marginLeft="20dp"/>
             　　　　　
 
+                <!--android:id="@+id/forgetID"-->
+                <!--android:text="Forget username ?"-->
             <TextView
-                android:id="@+id/forgetID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:gravity="right"
                 android:padding="10dp"
-                android:text="Forget username ?"/>
+                />
 
         </LinearLayout>
 
@@ -97,6 +99,15 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/create_an_account"/>
+        <Button
+            android:id="@+id/forgetID"
+            style="@style/AppButton_Cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/Forget_username"/>
 
     </LinearLayout>
 
