@@ -40,6 +40,10 @@ public class ConsUtils {
     public static String VALIDATE_PASSWORD = "validate_password";
     public static String SECURITY_QUESTIONS = "security_questions";
     public static String ACCOUNT_STATUS = "account_status";
+    public static String MAIN_PROMOTION = "PROMOTION";
+    public static String MAIN_CHAT = "CHAT";
+    public static String MAIN_MY_PAGE = "MY_PAGE";
+    public static String WRAPPY_USERNAME_FROMAT = "^[a-zA-Z][a-zA-Z0-9_]{5,29}$";//正则表达式   用户名称格式
 
 
     public static String NORMAL = "NORMAL";

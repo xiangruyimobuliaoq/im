@@ -53,16 +53,16 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/start_messaging_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="150dp"
+            android:layout_marginBottom="220dp"
             android:padding="16dp"
             android:layout_alignParentBottom="true"
             android:text="@string/StartMessaging"
-            style="@style/AppButton_OK"
-            android:id="@+id/start_messaging_button"/>
+            style="@style/AppButton_OK"/>
         <ImageView
             android:layout_width="match_parent"
             android:layout_gravity="bottom"

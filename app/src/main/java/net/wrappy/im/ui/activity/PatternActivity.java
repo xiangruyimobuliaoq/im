@@ -6,8 +6,20 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
+import com.lzy.okgo.request.PostRequest;
+
+import net.wrappy.im.R;
 import net.wrappy.im.contants.ConsUtils;
+import net.wrappy.im.contants.Url;
+import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.Register;
+import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.OkUtil;
+import net.wrappy.im.util.PopupUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,7 +40,7 @@ import me.tornado.android.patternlock.SetPatternActivity;
  */
 public class PatternActivity extends SetPatternActivity {
 
-    List<Integer> list = new ArrayList();
+//    List<Integer> list = new ArrayList();
     private static final String TAG = "PatternActivity";
     private String mIntentType;
     private Register mRegister;
@@ -36,10 +48,17 @@ public class PatternActivity extends SetPatternActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mIntentType = getIntent().getStringExtra(ConsUtils.INTENT);
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
-        if (!TextUtils.equals(mIntentType, ConsUtils.INTENT_REGISTER))
+        if (!TextUtils.equals(mIntentType, ConsUtils.INTENT_REGISTER)){
             setTypePattern(TYPE_NOCONFIRM);
+        }
+        if (ConsUtils.INTENT_CHECK.equals(mIntentType)){
+            title.setText(getResources().getString(me.tornado.android.patternlock.R.string.update_user_info));
+        }else {
+            title.setText(getResources().getString(me.tornado.android.patternlock.R.string.registration));
+        }
     }
 
     public static Intent getStartIntent(Activity context) {
@@ -49,21 +68,21 @@ public class PatternActivity extends SetPatternActivity {
     @Override
     protected void onSetPattern(List<PatternView.Cell> pattern) {
         Intent intent;
-        String ss = "";
-        list.clear();
-        String str = PatternUtils.patternToString(pattern);
-        for (int i = 0; i <str.length() ; i++) {
-            list.add(Integer.parseInt(str.substring(i,i+1)) + 1);
-        }
-        for (int i = 0; i <list.size() ; i++) {
-            ss = ss + list.get(i);
-        }
-        Log.e(TAG, "九宫格数据: " + ss);
+//        String ss = "";
+//        list.clear();
+//        String str = PatternUtils.patternToString(pattern);
+//        for (int i = 0; i <str.length() ; i++) {
+//            list.add(Integer.parseInt(str.substring(i,i+1)) + 1);
+//        }
+//        for (int i = 0; i <list.size() ; i++) {
+//            ss = ss + list.get(i);
+//        }
+        Log.e(TAG, "九宫格数据: " + PatternUtils.patternToString(pattern));
                 switch (mIntentType) {
             case ConsUtils.INTENT_CHECK:
                 intent = new Intent();
-//                intent.putExtra("pattern", PatternUtils.patternToString(pattern));
-                intent.putExtra("pattern", ss);
+                intent.putExtra("pattern", PatternUtils.patternToString(pattern));
+//                intent.putExtra("pattern", ss);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
@@ -80,4 +99,5 @@ public class PatternActivity extends SetPatternActivity {
                 break;
         }
     }
+
 }

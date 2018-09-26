@@ -111,23 +111,24 @@ public class InputPasswordRegisterActivity extends BaseActivity {
             }
             @Override
             public void error(Response<String> response) {
-                String s = response.body().toString();
+                Log.e(TAG, "error: " + response.body());
+//                AppFuncs.dismissProgressWaiting();
 
             }
-
         });
     }
 
     private void check() {
-        if (TextUtils.isEmpty(mun) || !mun.matches("^[a-zA-Z0-9]{6,48}$")) {
-            if (mun.length() < 6 || mun.length() > 30){
-                showOKDialog("check user name format, 6-30 letters, numbers, beginning with letters.");
-                return;
-            }
+        if (TextUtils.isEmpty(mun)) {
+            showOKDialog("Username can't be empty.");
+            return;
+        }
+        if (!mun.matches("^[a-zA-Z0-9]{6,48}$")){
+            showOKDialog("check user name format, 6-48 letters, numbers, beginning with letters.");
             return;
         }
         if (TextUtils.isEmpty(mPwd)) {
-            showOKDialog("Password is empty");
+            showOKDialog("Password can't be empty.");
             return;
         }
         if (mPwd.length() < 8){

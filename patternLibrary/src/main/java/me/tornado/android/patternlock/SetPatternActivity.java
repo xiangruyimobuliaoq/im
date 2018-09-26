@@ -154,7 +154,7 @@ public class SetPatternActivity extends BasePatternActivity
 
         removeClearPatternRunnable();
 
-     //   mMessageText.setText(R.string.pl_recording_pattern);
+        //   mMessageText.setText(R.string.pl_recording_pattern);
         mPatternView.setDisplayMode(PatternView.DisplayMode.Correct);
         mLeftButton.setEnabled(false);
         mRightButton.setEnabled(false);
@@ -183,7 +183,9 @@ public class SetPatternActivity extends BasePatternActivity
                 break;
             case Confirm:
             case ConfirmWrong:
-                if (newPattern.equals(mPattern)) {
+                if (newPattern.size() < mMinPatternSize) {
+                    updateStage(Stage.DrawTooShort);
+                } else if (newPattern.equals(mPattern)) {
                     // updateStage(Stage.ConfirmCorrect);
                     onSetPattern(mPattern);
                     onConfirmed();
@@ -247,8 +249,8 @@ public class SetPatternActivity extends BasePatternActivity
         mStage = newStage;
 
         if (mStage == Stage.DrawTooShort) {
-            mMessageTextError.setVisibility(View.VISIBLE);
-            mMessageTextError.setText(getString(R.string.pl_error_pattern_too_short));
+            mCountdownText.setVisibility(View.VISIBLE);
+            mCountdownText.setText(getString(R.string.pl_error_pattern_too_short));
         } else {
             mMessageText.setText(mStage.messageId);
         }
@@ -264,6 +266,7 @@ public class SetPatternActivity extends BasePatternActivity
         switch (mStage) {
             case Draw:
                 // clearPattern() resets display mode to DisplayMode.Correct.
+                mCountdownText.setText("");
                 mPatternView.clearPattern();
                 break;
             case DrawTooShort:
@@ -274,6 +277,7 @@ public class SetPatternActivity extends BasePatternActivity
                 break;
             case Confirm:
                 mPatternView.clearPattern();
+                mCountdownText.setText("");
                 break;
             case ConfirmWrong:
                 mPatternView.setDisplayMode(PatternView.DisplayMode.Wrong);

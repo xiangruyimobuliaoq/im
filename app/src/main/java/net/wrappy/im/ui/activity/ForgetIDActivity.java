@@ -14,6 +14,7 @@ import com.lzy.okgo.model.Response;
 
 import net.wrappy.im.BaseActivity;
 import net.wrappy.im.R;
+import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.ui.view.Layout;
@@ -73,21 +74,29 @@ public class ForgetIDActivity extends BaseActivity {
 
     private void request() {
         AppFuncs.showProgressWaiting(this);
-        AccountHelper.FIND_USER_ACCOUNT account = new AccountHelper.FIND_USER_ACCOUNT();
+        FIND_USER_ACCOUNT account = new FIND_USER_ACCOUNT();
         account.data.email = mEmail;
         account.data.phone = mPhone;
+        Log.e(TAG, "request: " + new Gson().toJson(account));
+        Log.e(TAG, "url: " + Url.accounts_helper );
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(account), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 Log.e(TAG, "success: " + response.body().toString());
                 AccountHelper.FIND_USER_ACCOUNT.Response json = new Gson().fromJson(response.body(), AccountHelper.FIND_USER_ACCOUNT.Response.class);
-                PopupUtils.showOKDialog(ForgetIDActivity.this, "tips", json.message);
+                if (json.code == 1000){
+                   showOKDialog("Send success！");
+                }else {
+//                PopupUtils.showOKDialog(ForgetIDActivity.this, "", json.message);
+                showOKDialog(json.message);
+                }
             }
 
             @Override
            public void error(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
+                Log.e(TAG, "error: " + response.body());
             }
         });
     }
@@ -98,17 +107,16 @@ public class ForgetIDActivity extends BaseActivity {
 
         if (TextUtils.isEmpty(mEmail)) {
 //            toast("email is empty");
-            showOKDialog("email is empty");
+            showOKDialog("Email address cannot be empty");
             return;
         }
         if (!Utils.isEmail(mEmail)){
-            showOKDialog(getResources().getString(R.string.illegal_email));
+            showOKDialog("Email address format not correct");
             return;
         }
-
         if (TextUtils.isEmpty(mPhone)) {
 //            toast("phone is empty");
-            showOKDialog("phone is empty");
+            showOKDialog("Phone number cannot be empty");
             return;
         }
         mPhone = picker.getSelectedCountryCodeWithPlus() + mPhone;
@@ -121,8 +129,22 @@ public class ForgetIDActivity extends BaseActivity {
     }
 
 
+   class FIND_USER_ACCOUNT{
+       public String type = ConsUtils.FIND_USER_ACCOUNT;
+       public Data data = new Data();
+         class Data {
+           /**
+            * email : bill@nst.com
+            * phone : +8618673290987
+            * send_email : true
+            * send_sms : false
+            */
 
-
-
+           public String email;
+           public String phone;
+           public boolean sendEmail = true;
+           public boolean sendSms = true;
+       }
+   }
 
 }

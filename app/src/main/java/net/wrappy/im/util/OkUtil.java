@@ -1,6 +1,7 @@
 package net.wrappy.im.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -25,6 +26,8 @@ import net.wrappy.im.ui.activity.LoginActivity;
  * 更新描述   ${TODO}
  */
 public class OkUtil {
+
+    private static final String TAG = "OkUtil";
 
 
 
@@ -60,6 +63,7 @@ public class OkUtil {
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
+                        Log.e(TAG, "111onSuccess: " + response.body() );
                         Auth auth = gson.fromJson(response.body(), Auth.class);
                         ConsUtils.putAccestoken(auth.access_token);
                         ConsUtils.putRefreshtoken(auth.refresh_token);
@@ -193,6 +197,7 @@ public class OkUtil {
                                         if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
                                             activity.overlay(LoginActivity.class);
                                         } else {
+                                            Log.e(TAG, "222onSuccess: " + response.body() );
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
                                             ConsUtils.putAccestoken(auth.access_token);
                                             ConsUtils.putRefreshtoken(auth.refresh_token);
@@ -241,6 +246,7 @@ public class OkUtil {
                                         if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
                                             activity.overlay(LoginActivity.class);
                                         } else {
+                                            Log.e(TAG, "333onSuccess: " + response.body());
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
                                             ConsUtils.putAccestoken(auth.access_token);
                                             ConsUtils.putRefreshtoken(auth.refresh_token);
@@ -289,6 +295,7 @@ public class OkUtil {
                                         if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
                                             activity.overlay(LoginActivity.class);
                                         } else {
+                                            Log.e(TAG, "444onSuccess: " + response.body() );
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
                                             ConsUtils.putAccestoken(auth.access_token);
                                             ConsUtils.putRefreshtoken(auth.refresh_token);

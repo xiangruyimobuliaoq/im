@@ -25,6 +25,9 @@ import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import butterknife.BindView;
 
 /**
@@ -62,9 +65,14 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String s = edtUserMame.getText().toString().trim();
-                if (TextUtils.isEmpty(s)) {
-//                    toast("username is empty");
-                    showOKDialog("username is empty");
+                if (TextUtils.isEmpty(s)){
+                    showOKDialog("Username can not be empty");
+                    return;
+                }
+                Pattern p= Pattern.compile(ConsUtils.WRAPPY_USERNAME_FROMAT);
+                Matcher m=p.matcher(s);
+                if(!m.matches()){
+                    showOKDialog("check username format, 6-30 letters, numbers, beginning with letters.");
                     return;
                 }
                 sendData(s);
@@ -99,14 +107,13 @@ public class LoginActivity extends BaseActivity {
                 }else {
                     String status = us.getData().getStatus();
                     if (ConsUtils.NORMAL.equals(status)){
-
 //                    showOKDialog(us.getMessage() + us.getData().getLockLeftSeconds());
                     }else if (ConsUtils.NOT_EXIST.equals(status)){
                      /** 帐号不存在*/
                     showOKDialog(us.getMessage());
                     }else if (ConsUtils.LOCKED.equals(status)){
                         /** 帐号被锁，剩余多少秒后解锁*/
-                    showOKDialog(us.getMessage() + "The remaining "  + us.getMessage() + us.getData().getLockLeftSeconds() +  " seconds");
+                    showOKDialog(us.getMessage() + "The remaining " + us.getData().getLockLeftSeconds() +  " seconds");
                     }
                 }
             }
@@ -114,6 +121,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void error(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
+                showErroe();
             }
         });
 

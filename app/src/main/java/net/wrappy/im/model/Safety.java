@@ -1,5 +1,6 @@
 package net.wrappy.im.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class Safety {
     private String message;
     private String request_timestamp;
     private String response_timestamp;
-    private List<DataBean> data;
+    private List<DataBean> data = new ArrayList<>();
 
     public int getCode() {
         return code;

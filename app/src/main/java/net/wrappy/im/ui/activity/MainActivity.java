@@ -23,6 +23,7 @@ import com.yalantis.ucrop.UCrop;
 import net.wrappy.im.BaseActivity;
 import net.wrappy.im.BaseFragment;
 import net.wrappy.im.R;
+import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.ui.fragment.EmptyFragment;
 import net.wrappy.im.ui.fragment.ProfileFragment;
 import net.wrappy.im.ui.view.Layout;
@@ -48,8 +49,9 @@ import butterknife.BindView;
  */
 @Layout(layoutId = R.layout.activity_main)
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.btnHeaderEdit)
-    ImageButton btnHeaderEdit;
+    public static ImageButton btnHeaderEdit;
+//    @BindView(R.id.btnHeaderEdit)
+//    ImageButton btnHeaderEdit;
     @BindView(R.id.btnHeaderSearch)
     ImageButton btnHeaderSearch;
     @BindView(R.id.tabs)
@@ -65,6 +67,7 @@ public class MainActivity extends BaseActivity {
     private FragmentManager fragmentManager;
     private Adapter adapter;
     private Map<Integer, Fragment> mCache = new HashMap<>();
+    public String MODEL = "";
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -79,12 +82,13 @@ public class MainActivity extends BaseActivity {
     protected void init() {
         initViewPager();
         initTabLayout();
+        btnHeaderEdit = findViewById(R.id.btnHeaderEdit);
         btnHeaderEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     AppFuncs.dismissKeyboard(MainActivity.this);
-                    ProfileFragment page = (ProfileFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + mViewPager.getId() + ":" + mViewPager.getCurrentItem());
+                    ProfileFragment page = (ProfileFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + mViewPager.getId() + ":" + mViewPager                               .getCurrentItem());
                     page.onDataEditChange(true);
                     btnHeaderEdit.setVisibility(View.GONE);
                 } catch (Exception ex) {
@@ -159,7 +163,7 @@ public class MainActivity extends BaseActivity {
             mTabLayout.addTab(tab);
         }
 //        createTabIcons(0, R.mipmap.ic_menu_normal, getString(R.string.tab_menu_menu));
-        createTabIcons(0, R.mipmap.ic_promotion, getString(R.string.tab_menu_menu));
+        createTabIcons(0, R.mipmap.ic_promotion, getString(R.string.tab_menu_contact));
         createTabIcons(1, R.mipmap.ic_menu_conversation_normal, getString(R.string.tab_menu_conversation));
         createTabIcons(2, R.mipmap.ic_promotion, getString(R.string.tab_menu_promotion));
         createTabIcons(3, R.mipmap.ic_menu_info_normal, getString(R.string.tab_menu_my_page));
@@ -176,14 +180,18 @@ public class MainActivity extends BaseActivity {
                     btnHeaderEdit.setVisibility(View.GONE);
                     imgLogo.setVisibility(View.VISIBLE);
                     if (tab.getPosition() == 0) {
+                        MODEL = ConsUtils.MAIN_PROMOTION;
                         appTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_menu_active, 0, 0);
                     } else if (tab.getPosition() == 1) {
                         btnHeaderSearch.setVisibility(View.VISIBLE);
+                        MODEL = ConsUtils.MAIN_CHAT;
 //                        mFab.setVisibility(View.VISIBLE);
                         appTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_menu_conversation_active, 0, 0);
                     } else if (tab.getPosition() == 2) {
+                        MODEL = ConsUtils.MAIN_PROMOTION;
                         appTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_promotion_h, 0, 0);
                     } else {
+                        MODEL = ConsUtils.MAIN_MY_PAGE;
                         btnHeaderEdit.setVisibility(View.VISIBLE);
                         appTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_menu_info_active, 0, 0);
                     }

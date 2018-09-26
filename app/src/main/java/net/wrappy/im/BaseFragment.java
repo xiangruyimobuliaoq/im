@@ -136,6 +136,12 @@ public abstract class BaseFragment extends BaseLazyFragment {
         mActivity.finish();
     }
 
+
+    //请求失败，请重新请求
+    public void showErroe(){
+        PopupUtils.showCustomDialog(mContext,"",mContext.getResources().getString(R.string.request_failed),R.string.ok,-1,null,null);
+    }
+
     public final String TAG = this.getClass().getSimpleName();
 
     public void showOKDialog(String msg){

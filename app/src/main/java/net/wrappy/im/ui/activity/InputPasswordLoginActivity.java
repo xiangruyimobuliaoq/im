@@ -1,6 +1,7 @@
 package net.wrappy.im.ui.activity;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import net.wrappy.im.ui.fragment.ForgetPasswordQuestionFragment;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
+import net.wrappy.im.util.SpUtil;
 
 import butterknife.BindView;
 
@@ -37,6 +39,8 @@ public class InputPasswordLoginActivity extends BaseActivity {
     private static final String TAG = "InputPasswordLoginActiv";
     @BindView(R.id.back)
     protected ImageView back;
+    @BindView(R.id.iv_type)
+    protected ImageView iv_type;
     @BindView(R.id.title)
     protected TextView title;
     @BindView(R.id.btnlogin)
@@ -48,9 +52,10 @@ public class InputPasswordLoginActivity extends BaseActivity {
     private String mPwd;
     private String mUsername;
 
+    private boolean isTrue = true;
     @Override
     protected void init() {
-        title.setText(getResources().getString(R.string.login).toUpperCase());
+        title.setText(getResources().getString(R.string.login));
         mUsername = getIntent().getStringExtra(ConsUtils.USERNAME);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +78,23 @@ public class InputPasswordLoginActivity extends BaseActivity {
                 finish();
             }
         });
+        iv_type.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isTrue){
+                   edtpassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                   iv_type.setImageResource(R.mipmap.ic_show);
+                    isTrue = false;
+                }else {
+                   edtpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                   iv_type.setImageResource(R.mipmap.ic_hidden);
+                    isTrue = true;
+
+                }
+
+            }
+        });
     }
 
     private void login() {
@@ -81,19 +103,28 @@ public class InputPasswordLoginActivity extends BaseActivity {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
-                Log.e(TAG, "success: " + response.body().toString() );
+                Log.e(TAG, "success: " + response.body().toString());
                 Auth auth = new Gson().fromJson(response.body().toString(), Auth.class);
                 if (null != auth.account) {
 //                    if ("invalid_grant".equals(auth.error)){
                     if (auth.error != null){
                         showOKDialog(auth.error_description);
                     }else {
+                        SpUtil.putString("liderong",mPwd,"11");
+//                        SpUtil.putString(mUsername,mPwd,"10");
                     startAndClearAll(MainActivity.class);
                     }
                 } else {
                     showOKDialog("login failed");
 //                    toast("login failed");
                 }
+            }
+
+            @Override
+            public void error(Response<String> response) {
+                super.error(response);
+                AppFuncs.dismissProgressWaiting();
+                showErroe();
             }
         });
     }
@@ -102,7 +133,7 @@ public class InputPasswordLoginActivity extends BaseActivity {
         mPwd = edtpassword.getText().toString().trim();
         if (TextUtils.isEmpty(mPwd)) {
 //            toast("password is empty");
-            showOKDialog("password is empty");
+            showOKDialog("password cannot be empty");
             return;
         }
         login();

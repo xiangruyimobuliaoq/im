@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.yalantis.ucrop.UCrop;
 
+import net.wrappy.im.ui.activity.MainActivity;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.ManagementAllActivity;
@@ -40,6 +43,7 @@ import butterknife.ButterKnife;
  * 更新描述   ${TODO}
  */
 public abstract class BaseActivity extends AppCompatActivity {
+    private static final String TAG = "BaseActivity";
     public static final int REQUEST_PERMISSION_CAMERA_AVATAR = 501;
     public static final int REQUEST_PERMISSION_CAMERA_BANNER = 502;
     public static final int RESULT_AVATAR = 503;
@@ -80,6 +84,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void showOKDialog(String msg){
         PopupUtils.showCustomDialog(mContext,"",msg,R.string.ok,-1,null,null);
+    }
+    //请求失败，请重新请求
+    public void showErroe(){
+        PopupUtils.showCustomDialog(mContext,"",mContext.getResources().getString(R.string.request_failed),R.string.ok,-1,null,null);
     }
 
     public void toast(String msg) {
@@ -288,7 +296,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-
     /**
      * 点击空白处除了EditText之外隐藏软键盘
      * @param ev
@@ -299,7 +306,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
             if (isShouldHideInput(v, ev)) {
-
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);

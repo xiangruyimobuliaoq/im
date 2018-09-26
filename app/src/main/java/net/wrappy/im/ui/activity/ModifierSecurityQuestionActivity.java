@@ -1,6 +1,7 @@
 package net.wrappy.im.ui.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -13,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.model.Response;
 
 import net.wrappy.im.BaseActivity;
@@ -21,10 +23,14 @@ import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.Register;
+import net.wrappy.im.model.Result;
+import net.wrappy.im.model.Safety;
 import net.wrappy.im.ui.view.Layout;
+import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +40,8 @@ import butterknife.BindView;
  * Created by ben on 13/11/2017.
  */
 @Layout(layoutId = R.layout.activity_security_question)
-public class RegistrationSecurityQuestionActivity extends BaseActivity {
+public class ModifierSecurityQuestionActivity extends BaseActivity {
+    private static final String TAG = "ModifierSecurityQuestio";
     @BindView(R.id.back)
     ImageView back;
     @BindView(R.id.title)
@@ -51,13 +58,12 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
     ArrayList<EditText> appEditTextViewsAnswers = new ArrayList<>();
     private ArrayAdapter<String> questionsAdapter;
     private List<AccountHelper.SECURITY_QUESTIONS.Response.Data> mData;
-    private Register mRegister = new Register();
 
     @Override
     protected void init() {
-        title.setText(getResources().getString(R.string.registration));
-        mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
-        getListQuestion();
+        btnQuestionComplete.setText("DONE");
+        title.setText(getResources().getString(R.string.update_question_and_answer));
+//        mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
         btnQuestionComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,15 +121,13 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                             securityQuestions.add(questions);
                         }
                         if (!errorString.isEmpty()) {
-                            PopupUtils.showOKDialog(RegistrationSecurityQuestionActivity.this, "", errorString);
+                            PopupUtils.showOKDialog(ModifierSecurityQuestionActivity.this, "", errorString);
                             return;
                         }
+                        Register mRegister = new Register();
                         mRegister.securityQuestions = securityQuestions;
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(ConsUtils.REGISTRATION, mRegister);
-                        overlay(UpdateProfileActivity.class, bundle);
+                      setEndModifierQuestions(mRegister.securityQuestions);
                     }
-
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -135,9 +139,89 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                 finish();
             }
         });
+        getData();
+    }
+
+    private void setEndModifierQuestions(List<Register.SecurityQuestions> securityQuestions) {
+        AppFuncs.showProgressWaiting(ModifierSecurityQuestionActivity.this);
+        OkUtil.privatePut(ModifierSecurityQuestionActivity.this,Url.accounts + "/updateSecurityQuestions" ,new Gson().toJson(securityQuestions) ,new OkUtil.Callback() {
+            @Override
+            public void success(Response<String> response) {
+                Log.e(TAG, "success: " + response.body().toString() );
+                AppFuncs.dismissProgressWaiting();
+                AccountHelper.SECURITY_QUESTIONS.Response json = new Gson().fromJson(response.body(), AccountHelper.SECURITY_QUESTIONS.Response.class);
+                if (1000 == json.code){
+                    PopupUtils.showCustomDialog(mContext, "", json.message, R.string.ok, -1, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (v.getId() == R.id.btnOk){
+                                finish();
+                            }
+                        }
+                    }, null);
+                }else {
+                    showOKDialog(json.message);
+                }
+                String message = json.message;
+
+            }//https://27.50.36.67:4333/api/accounts/securityQuestions/
+
+            @Override
+            public void error(Response<String> response) {
+                try {
+                    Log.e("123", response.getRawResponse().body().string());
+                    Result<String> o = new Gson().fromJson(response.getRawResponse().body().string(), new TypeToken<Result<String>>() {
+                    }.getType());
+                    if (o != null){
+                        PopupUtils.showOKDialog(mContext, "tips", o.message);
+                    }
+                    getData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                AppFuncs.dismissProgressWaiting();
+            }
+        });
+
+
+    }
+
+    List<Safety.DataBean> sd;
+    private void getData() {
+        final String username = getIntent().getStringExtra(ConsUtils.USERNAME);
+        OkUtil.publicGet(Url.accounts_securityQuestions + username + "?count=3", new OkUtil.Callback() {
+            @Override
+            public void success(Response<String> response) {
+                Log.e(TAG, username + "username" + response.body());
+                Safety sa = new Gson().fromJson(response.body().toString(),Safety.class);
+                if (1000 == sa.getCode()){
+                    sd = sa.getData();
+                    getListQuestion();
+                }else {
+                    showOKDialog(sa.getMessage());
+                }
+            }
+
+            @Override
+            public void error(Response<String> response) {
+                try {
+                    Log.e("123", response.getRawResponse().body().string());
+                    Result<String> o = new Gson().fromJson(response.getRawResponse().body().string(), new TypeToken<Result<String>>() {
+                    }.getType());
+                    if (o != null){
+                        PopupUtils.showOKDialog(mContext, "tips", o.message);
+                    }
+                    getData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     private void getListQuestion() {
+        spinnersQuestion.clear();
         AccountHelper.SECURITY_QUESTIONS questions = new AccountHelper.SECURITY_QUESTIONS();
         questions.language = "en";
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(questions), new OkUtil.Callback() {
@@ -151,17 +235,24 @@ public class RegistrationSecurityQuestionActivity extends BaseActivity {
                     stringQuestions.add(aa.question);
                 }
 
-                questionsAdapter = new ArrayAdapter<String>(RegistrationSecurityQuestionActivity.this, R.layout.registration_activity_security_question_item_textview, stringQuestions);
+                questionsAdapter = new ArrayAdapter<String>(ModifierSecurityQuestionActivity.this, R.layout.registration_activity_security_question_item_textview, stringQuestions);
                 securityQuestionLayout.removeAllViews();
                 for (int i = 0; i < 3; i++) {
-                    View questionLayoutView = LayoutInflater.from(RegistrationSecurityQuestionActivity.this).inflate(R.layout.registration_activity_security_question_item, null);
+                    View questionLayoutView = LayoutInflater.from(ModifierSecurityQuestionActivity.this).inflate(R.layout.registration_activity_security_question_item, null);
                     securityQuestionLayout.addView(questionLayoutView);
                     TextView txtQuestionTitle = (TextView) questionLayoutView.findViewById(R.id.txtQuestionTitle);
                     txtQuestionTitle.setText(String.format(getString(R.string.question), (i + 1)));
                     Spinner questionSpinner = (Spinner) questionLayoutView.findViewById(R.id.spinnerQuestion);
                     spinnersQuestion.add(questionSpinner);
                     questionSpinner.setAdapter(questionsAdapter);
-                    questionSpinner.setSelection(i);
+                        String question = sd.get(i).getQuestion();
+                        for (int k = 0; k < stringQuestions.size(); k++) {
+                            if (sd.get(i).getQuestion().equals(stringQuestions.get(k))){
+                                questionSpinner.setSelection(k);
+                                String s = stringQuestions.get(k);
+                                break;
+                            }
+                        }
                     EditText editTextView = (EditText) questionLayoutView.findViewById(R.id.edQuestionAnswer);
                     editTextView.setImeOptions(EditorInfo.IME_ACTION_DONE);
                     editTextView.setSingleLine();

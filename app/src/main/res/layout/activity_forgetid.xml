@@ -32,7 +32,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/email_tile" />
 
+                <!--android:text="214811896@qq.com"-->
             <EditText
+                android:singleLine="true"
+                android:nextFocusForward="@id/edProfilePhone"
                 android:layout_marginLeft="50dp"
                 android:id="@+id/edProfileEmail"
                 style="@style/AppText02"
@@ -88,6 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+                <!--android:text="17612345679"-->
             <EditText
                 android:id="@+id/edProfilePhone"
                 android:inputType="number"

@@ -553,6 +553,7 @@ public class PatternView extends View {
         clearPatternDrawLookup();
         mPatternDisplayMode = DisplayMode.Correct;
         invalidate();
+
     }
 
     /**

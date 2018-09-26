@@ -36,7 +36,7 @@ public class WelcomActivity extends BaseActivity {
     @BindView(R.id.icon_image1)
     protected ImageView topImage1;
     @BindView(R.id.icon_image2)
-    protected ImageView topImage2;
+    protected ImageView topImage2;   //Incorrect patern password
     @BindView(R.id.icon_introtext)
     protected ImageView textintro;
     @BindView(R.id.bottom_pages)
@@ -85,8 +85,8 @@ public class WelcomActivity extends BaseActivity {
 //                R.string.Page5Message,
                 R.string.Page6Message,
                 R.string.Page7Message,
-                R.string.Page8Message,
-//                R.string.Page9Message,
+//                R.string.Page8Message,
+                R.string.Page9Message,
                 R.string.Page10Message,
                 R.string.Page11Message
         };

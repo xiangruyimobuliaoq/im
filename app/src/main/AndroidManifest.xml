@@ -56,7 +56,7 @@
                   android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.ForgetIDActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme_two"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.PatternActivity"
@@ -64,15 +64,15 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.InputPasswordRegisterActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme_two"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.UpdateProfileActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme_two"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.InputPasswordLoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme_two"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.MainActivity"
@@ -93,6 +93,10 @@
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/AppTheme_two"/>
+        <activity
+            android:name=".ui.activity.ModifierSecurityQuestionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_two"/>
     </application>
 </manifest>

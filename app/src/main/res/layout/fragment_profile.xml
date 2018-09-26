@@ -121,7 +121,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="10dp"
-                                android:text="@string/username"/>
+                                android:text="@string/username_"/>
 
                             <View style="@style/divider"/>
 
@@ -200,7 +200,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:hint="@string/email"
+                                    android:hint="@string/email_"
                                     android:inputType="textEmailAddress"/>
                             </RelativeLayout>
 
@@ -256,14 +256,30 @@
                             </RelativeLayout>
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/btnProfileSubmit"
-                            style="@style/AppButton_OK"
+                        <LinearLayout
+                            android:id="@+id/ll_update_or_cancel_update"
+                            android:layout_marginTop="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/btn_update"
-                            android:visibility="gone"/>
+                            android:orientation="horizontal">
+                        <Button
+                            android:id="@+id/btnProfileSubmit"
+                            android:layout_marginRight="5dp"
+                            style="@style/AppButton_OK"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_update"/>
+                        <Button
+                            android:id="@+id/cancelupdate"
+                            android:layout_marginLeft="5dp"
+                            style="@style/AppButton_OK"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cancel_update"/>
+
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 

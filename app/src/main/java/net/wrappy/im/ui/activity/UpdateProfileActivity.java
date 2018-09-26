@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,12 +26,14 @@ import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.BottomSheetCell;
 import net.wrappy.im.model.BottomSheetListener;
+import net.wrappy.im.model.ModificationInfo;
 import net.wrappy.im.model.Register;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 import net.wrappy.im.util.UIUtil;
+import net.wrappy.im.util.Utils;
 
 import java.util.ArrayList;
 
@@ -48,6 +51,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 @Layout(layoutId = R.layout.activity_updateprofile)
 public class UpdateProfileActivity extends BaseActivity {
+
+    private static final String TAG = "UpdateProfileActivity";
     @BindView(R.id.back)
     protected ImageView back;
     @BindView(R.id.title)
@@ -134,10 +139,10 @@ public class UpdateProfileActivity extends BaseActivity {
                 sheetCells.add(sheetCell);
                 sheetCell = new BottomSheetCell(2, R.mipmap.ic_choose_gallery, getString(R.string.popup_choose_gallery));
                 sheetCells.add(sheetCell);
-                if (uriAvatar != null) {
-                    sheetCell = new BottomSheetCell(3, R.mipmap.setting_delete, getString(R.string.popup_delete_photo));
-                    sheetCells.add(sheetCell);
-                }
+//                if (uriAvatar != null) {
+//                    sheetCell = new BottomSheetCell(3, R.mipmap.setting_delete, getString(R.string.popup_delete_photo));
+//                    sheetCells.add(sheetCell);
+//                }
                 PopupUtils.createBottomSheet(UpdateProfileActivity.this, sheetCells, new BottomSheetListener() {
                     @Override
                     public void onSelectBottomSheetCell(int index) {
@@ -170,17 +175,21 @@ public class UpdateProfileActivity extends BaseActivity {
         mNickname = edProfileNickname.getText().toString().trim();
         email = edProfileEmail.getText().toString().trim();
         if (TextUtils.isEmpty(mNickname)) {
-            showOKDialog("Nickname is empty");
+            showOKDialog("Nickname  can not be empty");
 //            toast("Nickname is empty");
             return;
         }
         if (TextUtils.isEmpty(email)) {
-            showOKDialog("email is empty");
+            showOKDialog("Email  can not be empty");
 //            toast("email is empty");
             return;
         }
+        if (!Utils.isEmail(email)){
+            showOKDialog("Email format is not correct");
+            return;
+        }
         if (mRegister.extendedInfo.avatar == null){
-            showOKDialog("Please upload your head");
+            showOKDialog("Please upload your profile photo");
             return;
         }
         validateEmail();
@@ -193,33 +202,57 @@ public class UpdateProfileActivity extends BaseActivity {
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(email), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
+                Log.e(TAG, "success: " + response.body());
                 AccountHelper.VALIDATE_EMAIL.Response json = new Gson().fromJson(response.body(), AccountHelper.VALIDATE_EMAIL.Response.class);
                 if (json.code == 1000) {
                     regist();
                 } else {
-                    AppFuncs.dismissProgressWaiting();
+                   AppFuncs.dismissProgressWaiting();
+                    showOKDialog(json.message);
                 }
             }
+            @Override
+            public void error(Response<String> response) {
+                Log.e(TAG, "success: " + response.body());
+                AppFuncs.dismissProgressWaiting();
+                showErroe();
+            }
+
         });
     }
 
     private void regist() {
         mRegister.email = email;
-        mRegister.nickName = mNickname;
+        mRegister.firstName = mNickname;//firstName
+        mRegister.nickName = mNickname;//firstName
         mRegister.gender = adapterGender.getItem(spinnerProfileGender.getSelectedItemPosition()).toString().toUpperCase();
         mRegister.extendedInfo.server = BuildConfig.DOMAIN;
+        Log.e(TAG, " 发送的数据" +  new Gson().toJson(mRegister));
         OkUtil.publicPost(Url.accounts, new Gson().toJson(mRegister), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.VALIDATE_EMAIL.Response json = new Gson().fromJson(response.body(), AccountHelper.VALIDATE_EMAIL.Response.class);
 //                toast(json.message);
+                Log.e(TAG, "success: " + response.body().toString());
                 if (json.code == 1000) {
-                    startAndClearAll(LoginActivity.class);
+                    PopupUtils.showCustomDialog(mContext, "", "SUCCESS", R.string.ok, -1, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (v.getId() == R.id.btnOk){
+                              startAndClearAll(LoginActivity.class);
+                            }
+                        }
+                    }, null);
                 } else {
-                    AppFuncs.dismissProgressWaiting();
-                    showOKDialog(json.message);
+                    showOKDialog(response.body().toString());
                 }
+
+            }
+            @Override
+            public void error(Response<String> response) {
+                AppFuncs.dismissProgressWaiting();
+                showErroe();
             }
         });
     }

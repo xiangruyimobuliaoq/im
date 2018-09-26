@@ -6,6 +6,7 @@
 
     <color name="wrappy_primary">#ea657c</color>
     <color name="placeholder_background">#BEBEBE</color>
+    <color name="placeholder_background2">#FFFFFF</color>
 
     <color name="txt_light">#979797</color>
 

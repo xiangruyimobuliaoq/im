@@ -157,8 +157,12 @@ public class ValidatePhoneActivity extends BaseActivity {
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.Response res = new Gson().fromJson(response.body(), AccountHelper.Response.class);
-//                toast(res.message);
+                if (res.code == 1000){
+                showOKDialog("Send Success");
+                }else {
                 showOKDialog(res.message);
+                }
+//                toast(res.message);
             }
         });
     }
