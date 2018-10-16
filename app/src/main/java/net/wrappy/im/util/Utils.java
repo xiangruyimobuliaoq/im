@@ -127,12 +127,19 @@ public class Utils {
     /**
      * 根据区号判断是否是正确的电话号码
      * @param phoneNumber :带国家码的电话号码
-     * @param countryCode :默认国家码
+     * @param countryCode :电话号码
      * return ：true 合法  false：不合法
      */
     public static boolean isPhoneNumberValid(String phoneNumber, String countryCode) {
         Log.e(TAG, "isPhoneNumberValid: " + phoneNumber+"/"+countryCode);
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.createInstance(App.app);
+//        try {
+//            Phonenumber.PhoneNumber swissNumberProto = phoneUtil.parse(countryCode, US);
+//            //返回格式化过的电话号码  就是把电话号码第一位是0的去掉
+//           String format = phoneUtil.format(swissNumberProto, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+//        } catch (NumberParseException e) {
+//            e.printStackTrace();
+//        }
         try{
             Phonenumber.PhoneNumber numberProto = phoneUtil.parse(phoneNumber, countryCode);
             return phoneUtil.isValidNumber(numberProto);
@@ -140,6 +147,77 @@ public class Utils {
             e.printStackTrace();
             System.err.println("isPhoneNumberValid NumberParseException was thrown: " + e.toString());
         } return false;
+    }
+
+
+    /***
+     *
+     * @param phone   电话号码
+     * @param US     国家代码  英文的
+     * @return  格式过的电话号码
+     */
+    public static String getFormatHponeNumber(String phone,String US){
+        String phonenumber = "";
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.createInstance(App.app);
+        try {
+            Phonenumber.PhoneNumber swissNumberProto = phoneUtil.parse(phone, US);
+            long nationalNumber = swissNumberProto.getNationalNumber();
+            phonenumber = "" + nationalNumber;
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+        Log.e(TAG, "getFormatHponeNumber: " + phonenumber  + US);
+        return phonenumber.trim();
+    }
+
+
+    public static String majorizationPhone(String phone){
+        String mPhone = "";
+        if (phone.substring(0,1).equals("0")){
+            mPhone = phone.substring(1,phone.length());
+        }else {
+            mPhone = phone;
+        }
+
+        Log.e(TAG, "majorizationPhone: " + mPhone);
+        return mPhone;
+    }
+
+
+
+
+    /**
+     * 毫秒转化 天、时、分、秒、毫秒
+     */
+    public static String formatTime(Long ms) {
+        Integer ss = 1000;
+        Integer mi = ss * 60;
+        Integer hh = mi * 60;
+        Integer dd = hh * 24;
+
+        Long day = ms / dd;
+        Long hour = (ms - day * dd) / hh;
+        Long minute = (ms - day * dd - hour * hh) / mi;
+        Long second = (ms - day * dd - hour * hh - minute * mi) / ss;
+        Long milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss;
+
+        StringBuffer sb = new StringBuffer();
+        if(day > 0) {
+            sb.append(day+"天");
+        }
+        if(hour > 0) {
+            sb.append(hour+"小时");
+        }
+        if(minute > 0) {
+            sb.append(minute+"分");
+        }
+        if(second > 0) {
+            sb.append(second+"秒");
+        }
+        if(milliSecond > 0) {
+            sb.append(milliSecond+"毫秒");
+        }
+        return sb.toString();
     }
 
 }

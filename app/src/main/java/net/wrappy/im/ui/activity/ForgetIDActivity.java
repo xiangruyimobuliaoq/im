@@ -1,5 +1,6 @@
 package net.wrappy.im.ui.activity;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -76,7 +77,7 @@ public class ForgetIDActivity extends BaseActivity {
         AppFuncs.showProgressWaiting(this);
         FIND_USER_ACCOUNT account = new FIND_USER_ACCOUNT();
         account.data.email = mEmail;
-        account.data.phone = mPhone;
+        account.data.phone = picker.getSelectedCountryCodeWithPlus() + mPhone;
         Log.e(TAG, "request: " + new Gson().toJson(account));
         Log.e(TAG, "url: " + Url.accounts_helper );
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(account), new OkUtil.Callback() {
@@ -103,25 +104,25 @@ public class ForgetIDActivity extends BaseActivity {
 
     private void check() {
         mEmail = edProfileEmail.getText().toString().trim();
+        //把电话号码格式化一次
+        String formatHponeNumber = Utils.getFormatHponeNumber(edProfilePhone.getText().toString().trim(), picker.getSelectedCountryNameCode());
+        edProfilePhone.setText(formatHponeNumber);
         mPhone = edProfilePhone.getText().toString().trim();
 
         if (TextUtils.isEmpty(mEmail)) {
-//            toast("email is empty");
-            showOKDialog("Email address cannot be empty");
+            showOKDialog(getResources().getString(R.string.email_address_cannot_be_empty));
             return;
         }
         if (!Utils.isEmail(mEmail)){
-            showOKDialog("Email address format not correct");
+            showOKDialog(getResources().getString(R.string.email_address_format_not_correct));
             return;
         }
         if (TextUtils.isEmpty(mPhone)) {
-//            toast("phone is empty");
             showOKDialog("Phone number cannot be empty");
             return;
         }
-        mPhone = picker.getSelectedCountryCodeWithPlus() + mPhone;
 
-        if (!Utils.isPhoneNumberValid(mPhone, picker.getSelectedCountryCodeWithPlus())){
+        if (!Utils.isPhoneNumberValid(picker.getSelectedCountryCodeWithPlus() + mPhone, mPhone)){
             showOKDialog(getResources().getString(R.string.please_input_the_correct_cell_phone_number));
             return;
         }

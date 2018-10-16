@@ -75,7 +75,7 @@ public class Auth implements Serializable {
         public String state;
         public String country;
         public String zip;
-        public ExtendedInfo extendedInfo;
+        public ExtendedInfo extendedInfo = new ExtendedInfo();
         public String gender;
 
         public static class ExtendedInfo implements Serializable {

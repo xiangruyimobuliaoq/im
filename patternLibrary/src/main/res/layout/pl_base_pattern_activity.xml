@@ -58,7 +58,7 @@
             android:textAppearance="?android:textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/pl_countdown_text"
+            android:id="@+id/mMessageTextError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"

@@ -71,6 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         mContext = this;
         ManagementAllActivity.addActivity(BaseActivity.this);
+
         init();
     }
 
@@ -78,6 +79,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ManagementAllActivity.removeActivity(BaseActivity.this);
+        cancel();
+    }
+
+    public void cancel() {
+
     }
 
     protected abstract void init();

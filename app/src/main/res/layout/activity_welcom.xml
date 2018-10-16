@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="220dp"
+            android:layout_marginBottom="195dp"
             android:padding="16dp"
             android:layout_alignParentBottom="true"
             android:text="@string/StartMessaging"

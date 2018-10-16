@@ -2,6 +2,12 @@
 <manifest package="net.wrappy.im"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+
+    <!--注：如果您的App需要上传到google play store，您需要将READ_PHONE_STATE权限屏蔽掉或者移除，否则可能会被下架。-->
+
     <uses-permission android:name="net.wrappy.im.permission.READ_ONLY"/>
     <uses-permission android:name="net.wrappy.im.permission.WRITE_ONLY"/>
     <uses-permission android:name="net.wrappy.im.permission.IM_SERVICE"/>
@@ -49,6 +55,16 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
+            <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data android:scheme="wrappy"
+                  android:host="app"/>
+            </intent-filter>
+
+
         </activity>
         <activity android:name=".ui.activity.WelcomActivity"
                   android:screenOrientation="portrait"/>
@@ -78,6 +94,7 @@
             android:name=".ui.activity.MainActivity"
             android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait"/>
+
         <activity
             android:name=".ui.activity.ValidatePhoneActivity"
             android:theme="@style/AppThemeNoActionBar"
@@ -96,6 +113,18 @@
             android:theme="@style/AppTheme_two"/>
         <activity
             android:name=".ui.activity.ModifierSecurityQuestionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_two"/>
+        <activity
+            android:name=".ui.activity.ModifyEmailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_two"/>
+        <activity
+            android:name=".ui.activity.ModifyPhoneActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_two"/>
+        <activity
+            android:name=".ui.activity.ModifyPasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_two"/>
     </application>

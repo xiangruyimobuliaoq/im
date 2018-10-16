@@ -15,6 +15,7 @@ import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.Auth;
 import net.wrappy.im.ui.activity.LoginActivity;
+import net.wrappy.im.ui.activity.MainActivity;
 
 /**
  * 创建者     彭龙
@@ -186,7 +187,8 @@ public class OkUtil {
             OkGo.<String>post(url).upJson(json).execute(new StringCallback() {
                 @Override
                 public void onSuccess(Response<String> response) {
-                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                            || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
                         refreshAdmin();
                         OkGo.<String>post(Url.OauthToken)
                                 .params("grant_type", "refresh_token")
@@ -194,8 +196,10 @@ public class OkUtil {
                                 .execute(new StringCallback() {
                                     @Override
                                     public void onSuccess(Response<String> response) {
-                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
-                                            activity.overlay(LoginActivity.class);
+                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                                                || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
+                                            anevLogin(activity,url,callback,"privatePost",json);
+//                                            activity.overlay(LoginActivity.class);
                                         } else {
                                             Log.e(TAG, "222onSuccess: " + response.body() );
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
@@ -235,7 +239,8 @@ public class OkUtil {
             OkGo.<String>put(url).upJson(json).execute(new StringCallback() {
                 @Override
                 public void onSuccess(Response<String> response) {
-                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                            || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
                         refreshAdmin();
                         OkGo.<String>post(Url.OauthToken)
                                 .params("grant_type", "refresh_token")
@@ -243,8 +248,10 @@ public class OkUtil {
                                 .execute(new StringCallback() {
                                     @Override
                                     public void onSuccess(Response<String> response) {
-                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
-                                            activity.overlay(LoginActivity.class);
+                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                                                || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
+                                            anevLogin(activity,url,callback,"privatePut",json);
+//                                            activity.overlay(LoginActivity.class);
                                         } else {
                                             Log.e(TAG, "333onSuccess: " + response.body());
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
@@ -284,7 +291,8 @@ public class OkUtil {
             OkGo.<String>get(url).execute(new StringCallback() {
                 @Override
                 public void onSuccess(Response<String> response) {
-                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                            || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
                         refreshAdmin();
                         OkGo.<String>post(Url.OauthToken)
                                 .params("grant_type", "refresh_token")
@@ -292,8 +300,10 @@ public class OkUtil {
                                 .execute(new StringCallback() {
                                     @Override
                                     public void onSuccess(Response<String> response) {
-                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")) {
-                                            activity.overlay(LoginActivity.class);
+                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                                                || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
+                                            anevLogin(activity,url,callback,"privateGet","");
+//                                            activity.overlay(LoginActivity.class);
                                         } else {
                                             Log.e(TAG, "444onSuccess: " + response.body() );
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
@@ -324,6 +334,50 @@ public class OkUtil {
                 }
             });
         }
+    }
+
+    /**
+     *  重新请求获取数据
+     * @param activity
+     * @param url
+     * @param callback
+     * @param type
+     * @param json
+     */
+    private static void anevLogin(final BaseActivity activity, final String url, final Callback callback, final String type, final String json) {
+
+          Login(SpUtil.getSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_USERNAME), SpUtil.getSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_PASSWORD), new Callback() {
+              @Override
+              public void success(Response<String> response) {
+                  Log.e(TAG, "重新登录请求数据" + response.body().toString() );
+
+                  Auth auth = new Gson().fromJson(response.body().toString(), Auth.class);
+                  if (null != auth.account) {
+                      if (auth.error != null){
+                          ManagementAllActivity.finishAllActivity();
+                          activity.overlay(LoginActivity.class);
+                      }else {
+                          if ("privateGet".equals(type)){
+                              privateGet(activity,url,callback);
+                          }else if ("privatePut".equals(type)){
+                              privatePut(activity,url,json,callback);
+                          }else if ("privatePost".equals(type)){
+//                                   privatePost(activity,url,json,callback);  //暂时没有调用此方法
+                          }
+
+                      }
+                  } else {
+                        ManagementAllActivity.finishAllActivity();
+                         activity.overlay(LoginActivity.class);
+                  }
+              }
+
+              @Override
+              public void error(Response<String> response) {
+                  super.error(response);
+                  anevLogin(activity,url,callback,type,json);
+              }
+          });
     }
 
     public abstract static class Callback {

@@ -26,14 +26,14 @@ public class BasePatternActivity extends AppCompatActivity {
     protected Button mRightButton;
     protected TextView bottomText;
     protected View view;
-//    protected TextView mMessageTextError;
-    public TextView mCountdownText;
+    protected TextView mMessageTextError;
+//    public TextView mCountdownText;
 
     private final Runnable clearPatternRunnable = new Runnable() {
         public void run() {
             // clearPattern() resets display mode to DisplayMode.Correct.
             mPatternView.clearPattern();
-            mCountdownText.setText("");
+            mMessageTextError.setText("");
         }
     };
 
@@ -52,7 +52,8 @@ public class BasePatternActivity extends AppCompatActivity {
         mRightButton = (Button) findViewById(R.id.pl_right_button);
         bottomText = (TextView) findViewById(R.id.bottomText);
         view = (View) findViewById(R.id.viewspan);
-        mCountdownText = (TextView) findViewById(R.id.pl_countdown_text);
+        mMessageTextError = (TextView) findViewById(R.id.mMessageTextError);
+//        mMessageTextError = (TextView) findViewById(R.id.pl_message_text_error);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
 
+import net.wrappy.im.contants.ConsUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +25,31 @@ import java.io.StreamCorruptedException;
  */
 public class SpUtil {
 
+
+
+    public static void spSaveUsernameOrPassword(String key,String value){
+
+        SharedPreferences sp = UIUtil.mContext.getSharedPreferences(ConsUtils.WRAPPY_CONTENT_DATA,UIUtil.mContext.MODE_PRIVATE);
+        sp.edit().putString(key,value).commit();
+    }
+
+    public static String getSaveUsernameOrPassword(String key){
+
+        SharedPreferences sp = UIUtil.mContext.getSharedPreferences(ConsUtils.WRAPPY_CONTENT_DATA,UIUtil.mContext.MODE_PRIVATE);
+        return sp.getString(key,"");
+    }
+
+    public static void spSave(String key,boolean b){
+
+        SharedPreferences sp = UIUtil.mContext.getSharedPreferences(ConsUtils.WRAPPY_CONTENT_DATA,UIUtil.mContext.MODE_PRIVATE);
+        sp.edit().putBoolean(key,b).commit();
+    }
+
+    public static boolean getSave(String key){
+
+        SharedPreferences sp = UIUtil.mContext.getSharedPreferences(ConsUtils.WRAPPY_CONTENT_DATA,UIUtil.mContext.MODE_PRIVATE);
+        return sp.getBoolean(key,false);
+    }
 
     public static void putString(String name, String key, String value) {
         UIUtil.mContext.getSharedPreferences(name, 0).edit().putString(key, value).commit();

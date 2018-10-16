@@ -24,6 +24,7 @@ import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
+import net.wrappy.im.util.Utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +66,10 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String s = edtUserMame.getText().toString().trim();
+
+//                Log.e(TAG, "毫少转成天、时、分、秒 " + Utils.formatTime(Long.valueOf(edtUserMame.getText().toString().trim())));
+//                Log.e(TAG, "毫少转成天、时、分、秒 " + Utils.formatTime(Long.parseLong(edtUserMame.getText().toString().trim())));
+
                 if (TextUtils.isEmpty(s)){
                     showOKDialog("Username can not be empty");
                     return;
@@ -76,6 +81,7 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
                 sendData(s);
+
             }
         });
         btnShowRegister.setOnClickListener(new View.OnClickListener() {
@@ -99,21 +105,22 @@ public class LoginActivity extends BaseActivity {
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 Log.e(TAG, "success: " + response.body().toString());
+                String s1 = response.body().toString();
                 UserNameStatus us = new Gson().fromJson(response.body().toString(), UserNameStatus.class);
-                if (us.getCode() == 1000){
+                if (us.code == 1000){
                     Bundle bundle = new Bundle();
                     bundle.putString(ConsUtils.USERNAME, s);
                     overlay(InputPasswordLoginActivity.class, bundle);
                 }else {
-                    String status = us.getData().getStatus();
+                    String status = us.data.status;
                     if (ConsUtils.NORMAL.equals(status)){
 //                    showOKDialog(us.getMessage() + us.getData().getLockLeftSeconds());
                     }else if (ConsUtils.NOT_EXIST.equals(status)){
                      /** 帐号不存在*/
-                    showOKDialog(us.getMessage());
+                    showOKDialog(us.message);
                     }else if (ConsUtils.LOCKED.equals(status)){
                         /** 帐号被锁，剩余多少秒后解锁*/
-                    showOKDialog(us.getMessage() + "The remaining " + us.getData().getLockLeftSeconds() +  " seconds");
+                    showOKDialog(us.message + "The remaining " + us.data.lockLeftSeconds /1000+  " seconds");
                     }
                 }
             }

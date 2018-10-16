@@ -20,51 +20,11 @@ public class UserNameStatus {
      * data : {"id":"5b7e124fa7409dce9c0c94dc","createdDate":"2018-08-23T09:47:59.81","modifiedDate":"2018-08-27T17:40:07.505","username":"bill008","status":"NORMAL","count":3,"lockLeftSeconds":0}
      */
 
-    private int code;
-    private String message;
-    private String request_timestamp;
-    private String response_timestamp;
-    private DataBean data;
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getRequest_timestamp() {
-        return request_timestamp;
-    }
-
-    public void setRequest_timestamp(String request_timestamp) {
-        this.request_timestamp = request_timestamp;
-    }
-
-    public String getResponse_timestamp() {
-        return response_timestamp;
-    }
-
-    public void setResponse_timestamp(String response_timestamp) {
-        this.response_timestamp = response_timestamp;
-    }
-
-    public DataBean getData() {
-        return data;
-    }
-
-    public void setData(DataBean data) {
-        this.data = data;
-    }
+    public int code;
+    public String message;
+    public String request_timestamp;
+    public String response_timestamp;
+    public DataBean data = new DataBean();
 
     public static class DataBean {
         /**
@@ -77,68 +37,13 @@ public class UserNameStatus {
          * lockLeftSeconds : 0
          */
 
-        private String id;
-        private String createdDate;
-        private String modifiedDate;
-        private String username;
-        private String status;
-        private int count;
-        private int lockLeftSeconds;
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getCreatedDate() {
-            return createdDate;
-        }
-
-        public void setCreatedDate(String createdDate) {
-            this.createdDate = createdDate;
-        }
-
-        public String getModifiedDate() {
-            return modifiedDate;
-        }
-
-        public void setModifiedDate(String modifiedDate) {
-            this.modifiedDate = modifiedDate;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-        public int getLockLeftSeconds() {
-            return lockLeftSeconds;
-        }
-
-        public void setLockLeftSeconds(int lockLeftSeconds) {
-            this.lockLeftSeconds = lockLeftSeconds;
-        }
+        public String id;
+        public String createdDate;
+        public String modifiedDate;
+        public String username;
+        public String status;
+        public int count;
+        public long lockLeftSeconds;
     }
+
 }

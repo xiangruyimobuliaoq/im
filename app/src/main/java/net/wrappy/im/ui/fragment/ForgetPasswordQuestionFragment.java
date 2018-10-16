@@ -2,9 +2,12 @@ package net.wrappy.im.ui.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.LauncherActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
+import net.wrappy.im.model.AccountHelper;
+import net.wrappy.im.model.Register;
 import net.wrappy.im.model.Result;
 
 import android.text.TextUtils;
@@ -17,29 +20,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 
-import net.wrappy.im.BaseActivity;
 import net.wrappy.im.R;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
-import net.wrappy.im.model.Result;
 import net.wrappy.im.model.Safety;
 import net.wrappy.im.model.ValidationProblem;
+import net.wrappy.im.ui.activity.ModifierSecurityQuestionActivity;
+import net.wrappy.im.ui.activity.ModifyPasswordActivity;
+import net.wrappy.im.ui.activity.PatternActivity;
 import net.wrappy.im.util.AppDelegate;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 
 import java.io.IOException;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +53,7 @@ import butterknife.OnClick;
 public class ForgetPasswordQuestionFragment extends Fragment {
 
     private static String TYPE = "typeofsecu";
+    private static final String TAG = "ForgetPasswordQuestionF";
     /**
      * result : success
      * message : account has been blocked sucessfully
@@ -82,8 +81,10 @@ public class ForgetPasswordQuestionFragment extends Fragment {
     EditText edSecurityForgetQuestion02;
     @BindView(R.id.txtSecurityQuestionTitle)
     TextView txtSecurityQuestionTitle;
+    String secretKey;
     List<Safety.DataBean> sd;
     AppDelegate appDelegate;
+    Safety sa;
 //    ArrayList<WpKMemberSecurityQuestionDto> stringQuestions = new ArrayList<>();
 
     int type = 0;
@@ -103,10 +104,32 @@ public class ForgetPasswordQuestionFragment extends Fragment {
         return fragment;
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ManagementAllActivity.removeActivityTwo(getActivity());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sa != null){
+        AppFuncs.dismissProgressWaiting();
+        }
+    }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        AppFuncs.dismissProgressWaiting();
+//    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.forget_password_question_fragment, null);
+        ManagementAllActivity.addActivityTwo(getActivity());
         ButterKnife.bind(this, mainView);
         type = getArguments().getInt(TYPE, 0);
         if (type == 1) {
@@ -131,7 +154,7 @@ public class ForgetPasswordQuestionFragment extends Fragment {
             public void success(Response<String> response) {
                 Log.e("123", response.body());
                 AppFuncs.dismissProgressWaiting();
-                Safety sa = new Gson().fromJson(response.body().toString(),Safety.class);
+                sa = new Gson().fromJson(response.body().toString(),Safety.class);
                 if (1000 == sa.getCode()){
 //                    showOKDialog(sa.getMessage());
                     sd = sa.getData();
@@ -180,7 +203,6 @@ public class ForgetPasswordQuestionFragment extends Fragment {
         if (TextUtils.isEmpty(error)) {
 //            AppFuncs.alert(getActivity(), error, true);
              postSendDate(answer01,answer02);
-
         }else {
             showOKDialog(error);
         }
@@ -192,6 +214,7 @@ public class ForgetPasswordQuestionFragment extends Fragment {
          list.add(new sendData(sd.get(0).getCode(),answer01));
          list.add(new sendData(sd.get(1).getCode(),answer02));
         String username = getActivity().getIntent().getStringExtra("username");
+        AppFuncs.showProgressWaiting(getActivity());
          OkUtil.publicPost(Url.accounts_securityQuestions + username + "/validate",new Gson().toJson(list), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
@@ -200,8 +223,11 @@ public class ForgetPasswordQuestionFragment extends Fragment {
                 if (!TextUtils.isEmpty(s)){
                   ValidationProblem vp = new Gson().fromJson(s, ValidationProblem.class);
                   if (vp.getCode() == 1000){
-                      String data = vp.getData();
-
+                      secretKey = vp.getData();
+                      Bundle bundle = new Bundle();
+                      bundle.putString(ConsUtils.INTENT, ConsUtils.INTENT_REGISTER);
+                      bundle.putString(ConsUtils.WRAPPY_MODIFY_PASSWORD,ConsUtils.WRAPPY_MODIFY_PASSWORD);
+                      overlayForResult(PatternActivity.class, 100, bundle);
                   }else {
                       showOKDialog(vp.getMessage());
                   }
@@ -230,6 +256,21 @@ public class ForgetPasswordQuestionFragment extends Fragment {
 
     }
 
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            AppFuncs.showProgressWaiting(getActivity());
+            String pattern = data.getStringExtra("pattern");
+            Intent intent = new Intent(getActivity(), ModifyPasswordActivity.class);
+            intent.putExtra(ConsUtils.WRAPPY_SECRETKEY,secretKey);
+            intent.putExtra(ConsUtils.WRAPPY_GESTURE_PASSWORD,pattern);
+            startActivity(intent);
+        }
+    }
+
     private void TAG(String s) {
         Log.i("LTH", s);
     }
@@ -247,5 +288,25 @@ public class ForgetPasswordQuestionFragment extends Fragment {
             this.answer = answer;
         }
     }
+
+    //请求失败，请重新请求
+    public void showErroe(){
+        PopupUtils.showCustomDialog(getActivity(),"",getActivity().getResources().getString(R.string.request_failed),R.string.ok,-1,null,null);
+    }
+    /**
+     * 转跳 没有finish
+     *
+     * @param classObj
+     * @param requestCode
+     * @param params
+     */
+    public void overlayForResult(Class<?> classObj, int requestCode, Bundle params) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setClass(getActivity(), classObj);
+        intent.putExtras(params);
+        startActivityForResult(intent, requestCode);
+        getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+    }
+
 
 }

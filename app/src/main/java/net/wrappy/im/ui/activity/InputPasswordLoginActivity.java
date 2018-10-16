@@ -20,6 +20,7 @@ import net.wrappy.im.model.Auth;
 import net.wrappy.im.ui.fragment.ForgetPasswordQuestionFragment;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.SpUtil;
 
@@ -83,18 +84,27 @@ public class InputPasswordLoginActivity extends BaseActivity {
             public void onClick(View v) {
 
                 if (isTrue){
-                   edtpassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                   iv_type.setImageResource(R.mipmap.ic_show);
+                    edtpassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    iv_type.setImageResource(R.mipmap.ic_show);
                     isTrue = false;
+                    edtpassword.requestFocus();
                 }else {
-                   edtpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                   iv_type.setImageResource(R.mipmap.ic_hidden);
+                    edtpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    iv_type.setImageResource(R.mipmap.ic_hidden);
                     isTrue = true;
+                    edtpassword.requestFocus();
 
                 }
 
             }
         });
+        ManagementAllActivity.addActivityTwo(this);
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
+        ManagementAllActivity.removeActivityTwo(this);
     }
 
     private void login() {
@@ -110,9 +120,9 @@ public class InputPasswordLoginActivity extends BaseActivity {
                     if (auth.error != null){
                         showOKDialog(auth.error_description);
                     }else {
-                        SpUtil.putString("liderong",mPwd,"11");
-//                        SpUtil.putString(mUsername,mPwd,"10");
-                    startAndClearAll(MainActivity.class);
+                        SpUtil.spSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_USERNAME,mUsername);
+                        SpUtil.spSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_PASSWORD,mPwd);
+                        startAndClearAll(MainActivity.class);
                     }
                 } else {
                     showOKDialog("login failed");

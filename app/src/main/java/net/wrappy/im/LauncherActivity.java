@@ -20,8 +20,10 @@ import android.widget.Toast;
 
 import com.yalantis.ucrop.UCrop;
 
+import net.wrappy.im.ui.activity.RouterActivity;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.ToastHelper;
 
 import butterknife.ButterKnife;
@@ -44,7 +46,12 @@ public abstract class LauncherActivity extends AppCompatActivity {
     public static final int BANNER = 506;
     public static final int REQUEST_PERMISSION_PICKER_AVATAR = 507;
     public static final int REQUEST_PERMISSION_PICKER_BANNER = 508;
-    private Toast mToast;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ManagementAllActivity.removeActivity(this);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +71,7 @@ public abstract class LauncherActivity extends AppCompatActivity {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
+        ManagementAllActivity.addActivity(this);
         init();
     }
 

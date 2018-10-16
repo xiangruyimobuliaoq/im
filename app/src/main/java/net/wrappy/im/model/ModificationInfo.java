@@ -13,36 +13,28 @@ public class ModificationInfo {
 
 
     /**
-     * patternPassword : 14789
-     * account : {"firstName":"ClimbCrabtets","email":"pxbiawwww1@qq.com","mobilePhone":"+86168000000444401","extendedInfo":{"avatar":"BASE-64_STRING","backgroundImage":"BASE-64_STRING"}}
+     * firstName : ClimbCrabtets
+     * email : pxbiawwww1@qq.com
+     * mobilePhone : +86168000000444401
+     * gender : MALE
+     * extendedInfo : {"avatar":"BASE-64_STRING","backgroundImage":"BASE-64_STRING"}
      */
 
-    public String patternPassword;
-    public AccountBean account = new AccountBean();
+    public String firstName;
+    public String email;
+    public String mobilePhone;
+    public String gender;
+    public ExtendedInfoBean extendedInfo = new ExtendedInfoBean();
 
-    public static class AccountBean {
+
+    public static class ExtendedInfoBean {
         /**
-         * firstName : ClimbCrabtets
-         * email : pxbiawwww1@qq.com
-         * mobilePhone : +86168000000444401
-         * extendedInfo : {"avatar":"BASE-64_STRING","backgroundImage":"BASE-64_STRING"}
+         * avatar : BASE-64_STRING
+         * backgroundImage : BASE-64_STRING
          */
 
-        public String firstName;
-        public String email;
-        public String mobilePhone;
-        public ExtendedInfoBean extendedInfo = new ExtendedInfoBean();
-
-
-        public static class ExtendedInfoBean {
-            /**
-             * avatar : BASE-64_STRING
-             * backgroundImage : BASE-64_STRING
-             */
-
-            public String avatar;
-            public String backgroundImage;
-
-        }
+        public String avatar;
+        public String backgroundImage;
     }
+
 }

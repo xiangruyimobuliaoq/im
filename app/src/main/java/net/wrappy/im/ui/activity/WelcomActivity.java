@@ -17,6 +17,7 @@ import android.widget.TextView;
 import net.wrappy.im.BaseActivity;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.R;
+import net.wrappy.im.util.PopupUtils;
 
 import butterknife.BindView;
 
@@ -177,8 +178,6 @@ public class WelcomActivity extends BaseActivity {
 
                             }
                         });
-
-
                         fadeoutImage.startAnimation(outAnimation);
                         fadeinImage.startAnimation(inAnimation);
                     }

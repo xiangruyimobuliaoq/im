@@ -2,19 +2,28 @@
     <string name="app_name">Wrappy</string>
 
 
+    <string name="please_enter_5_bit_verification_code">Please enter 5 bit verification code</string>
+    <string name="please_input_the_phone_number">Please input the phone number</string>
+    <string name="please_input_the_sns_code">Please input the SNS code</string>
+    <string name="email_address_cannot_be_empty">Email address cannot be empty</string>
+    <string name="email_address_format_not_correct">Email address format not correct</string>
     <string name="request_failed">Request failed, please request again</string>
     <string name="cannot_be_empty">cannot be empty</string>
     <string name="update_question_and_answer">Update Question And Answer</string>
     <string name="account_verification">Account Verification</string>
+    <string name="modify_your_phone_number">Modify your phone number</string>
+    <string name="modify_your_email">Modify your email</string>
     <string name="Profile">Profile</string>
-    <string name="forgot_password">ForgotPassword</string>
+    <string name="forgot_password">ForgetPassword</string>
     <string name="illegal_email">Illegal email</string>
     <string name="please_input_the_correct_cell_phone_number">Phone number format not correct</string>
     <string name="StartMessaging">START MESSAGING</string>
     <string name="create_an_account">Register</string>
     <string name="action_done">Done</string>
     <string name="next">Next</string>
-    <string name="lock_screen_confirm_passphrase">Confirm Password</string>
+    <string name="lock_screen_confirm_passphrase">Confirm password</string>
+    <string name="lock_screen_confirm_passphrase_two">Input confirm password</string>
+    <string name="confirm_new_password">Confirm new password</string>
     <string name="add_people">Add People</string>
 
     <string name="Page1Titlenull"></string>
@@ -128,10 +137,12 @@
     <string name="key_manager">Key Manager</string>
     <string name="add_another_account">Add Another Account</string>
     <string name="check_email_passcode">Please check your messages\nand enter the passcode</string>
+    <string name="welcome">Welcome to Wrappy \nEnjoy Wrappy</string>
     <string name="vertify_title_noti">Please input your phone number here</string>
+    <string name="please_input_your_new_email">Please input your new email</string>
     <string name="send_again">Resend passcode</string>
     <string name="answer_secret_question">Answer your secret question</string>
-    <string name="Chose_your_security_question">Chose your security question</string>
+    <string name="Chose_your_security_question">Choose your security question</string>
     <string name="Question1">Question1</string>
     <string name="Question2">Question2</string>
     <string name="your_answer">Your Answer</string>
@@ -150,10 +161,9 @@
     <string name="all">All</string>
     <string name="username_">Username*</string>
     <string name="username">Username</string>
-    <string name="email">Email*</string>
-    <string name="email_">Email</string>
-    <string name="mobile_phone">Mobile Phone*</string>
-    <string name="mobile_phone_">Mobile Phone</string>
+    <string name="email">Email</string>
+    <string name="email_l">Email :</string>
+    <string name="mobile_phone">Mobile Phone</string>
     <string name="phone">phone</string>
     <string name="gender">Gender</string>
     <string name="referral">Referral</string>
@@ -226,8 +236,7 @@
     <string name="cancel_and_home">Cancel this step and return to Login screen?</string>
     <string name="invite_friends_text">Invite Friend</string>
     <string name="share_app_text">Let me recommend you this application</string>
-    <string name="email_tile">Email* </string>
-    <string name="email_tile_">Email </string>
+    <string name="email_tile">Email</string>
     <!--<string name="email_tile">Email *</string>-->
     <string name="logout_noti">Do you want to logout of this device?</string>
     <string name="share_title">Choose sharing method</string>
@@ -245,8 +254,10 @@
 
     <string name="create_new_username">Create a username</string>
     <string name="create_new_password">Create a password</string>
+    <string name="new_password">New password</string>
     <string name="input_your_confidential_info">Input Your Confidential Info</string>
-    <string name="input_your_password">Input your Password</string>
+    <string name="input_your_password">Input your password</string>
+    <string name="input_your_new_password">Input your new password</string>
     <string name="input_password">Input new password</string>
     <string name="input_new_password">Input your new password</string>
     <string name="input_new_username">Input your new username</string>
@@ -268,7 +279,7 @@
     <string name="local_time_format">MMM dd, yyyy</string>
     <string name="promotion_format">%1$s from <b>%2$s</b> level (%3$s)</string>
     <string name="promotion_history_description">More than level 2 aren\'t visible</string>
-    <string name="forgot_username">Forgot Username</string>
+    <string name="forgot_username">Forget Username</string>
 
     <string-array name="profile_gender_display">
         <item>Female</item>

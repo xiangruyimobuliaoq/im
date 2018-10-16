@@ -30,6 +30,7 @@ import net.wrappy.im.model.ModificationInfo;
 import net.wrappy.im.model.Register;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 import net.wrappy.im.util.UIUtil;
@@ -240,7 +241,8 @@ public class UpdateProfileActivity extends BaseActivity {
                         @Override
                         public void onClick(View v) {
                             if (v.getId() == R.id.btnOk){
-                              startAndClearAll(LoginActivity.class);
+                                ManagementAllActivity.finishAllActivity();
+                                startAndClearAll(LoginActivity.class);
                             }
                         }
                     }, null);

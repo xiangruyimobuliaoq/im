@@ -1,9 +1,7 @@
 package net.wrappy.im.ui.activity;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,16 +19,14 @@ import net.wrappy.im.R;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.AccountHelper;
-import net.wrappy.im.model.Register;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 import net.wrappy.im.util.Utils;
 
-import javax.security.auth.login.LoginException;
-
 import butterknife.BindView;
+import me.tornado.android.patternlock.PatternUtils;
 
 /**
  * 创建者     彭龙
@@ -42,17 +38,16 @@ import butterknife.BindView;
  * 更新描述   ${TODO}
  */
 
-@Layout(layoutId = R.layout.activity_validatephone)
-public class ValidatePhoneActivity extends BaseActivity {
-    private static final String TAG = "ValidatePhoneActivity";
+@Layout(layoutId = R.layout.activity_modify_phone)
+public class ModifyPhoneActivity extends BaseActivity {
     @BindView(R.id.back)
     ImageView back;
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.txt_pin_entry)
     Pinview txtPin;
-    @BindView(R.id.lnVerifyContainer)
-    LinearLayout lnVerifyContainer;
+//    @BindView(R.id.lnVerifyContainer)
+//    LinearLayout lnVerifyContainer;
     @BindView(R.id.picker)
     CountryCodePicker picker;
     @BindView(R.id.edVerifyPhone)
@@ -66,20 +61,21 @@ public class ValidatePhoneActivity extends BaseActivity {
 
     @Override
     protected void init() {
-        AppFuncs.dismissKeyboard(this);
-        title.setText(getResources().getString(R.string.account_verification));
+        title.setText(getResources().getString(R.string.modify_your_phone_number));
         picker.changeDefaultLanguage(CountryCodePicker.Language.ENGLISH);
         picker.setAutoDetectedCountry(true);
+        //发送手机验证码
         btnVerifyCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String value = txtPin.getValue();
+                //把电话号码格式化一次
                 String formatHponeNumber = Utils.getFormatHponeNumber(edVerifyPhone.getText().toString().trim(), picker.getSelectedCountryNameCode());
                 edVerifyPhone.setText(formatHponeNumber);
                 mPhone = edVerifyPhone.getText().toString().trim();
 
                 if (TextUtils.isEmpty(mPhone)) {
-                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "", "Please input the phone number");
+                    showOKDialog(getResources().getString(R.string.please_input_the_phone_number));
                     return;
                 }
                 if (!Utils.isPhoneNumberValid(picker.getSelectedCountryCodeWithPlus() + mPhone,mPhone)){
@@ -88,26 +84,24 @@ public class ValidatePhoneActivity extends BaseActivity {
                 }
 
                 if (TextUtils.isEmpty(value)) {
-                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "", "Please input the SNS code");
+                    PopupUtils.showOKDialog(ModifyPhoneActivity.this, "", getResources().getString(R.string.please_input_the_sns_code));
                     return;
                 }
 
                 if (value.length() != 5){
-                    showOKDialog("Please enter 5 bit verification code.");
+                    showOKDialog(getResources().getString(R.string.please_enter_5_bit_verification_code));
                     return;
                 }
                 validateCode(value, mPhone);
             }
         });
+        //发送手机号码
         sendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String formatHponeNumber = Utils.getFormatHponeNumber(edVerifyPhone.getText().toString().trim(), picker.getSelectedCountryNameCode());
-                edVerifyPhone.setText(formatHponeNumber);
                 mPhone = edVerifyPhone.getText().toString().trim();
                 if (TextUtils.isEmpty(mPhone)) {
-                    PopupUtils.showOKDialog(ValidatePhoneActivity.this, "", "Please input the phone number");
+                    showOKDialog(getResources().getString(R.string.please_input_the_phone_number));
                     return;
                 }
                 mCountryCode = picker.getSelectedCountryCodeWithPlus();
@@ -130,7 +124,7 @@ public class ValidatePhoneActivity extends BaseActivity {
         AppFuncs.showProgressWaiting(this);
         AccountHelper.VALIDATE_SMS_CODE helper = new AccountHelper.VALIDATE_SMS_CODE();
         helper.data.countryCode = picker.getSelectedCountryCodeWithPlus();
-        helper.data.type = ConsUtils.REGISTRATION;
+        helper.data.type = ConsUtils.CHANGE_MOBILE;
         helper.data.phone = phone;
         helper.data.code = value;
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
@@ -138,20 +132,32 @@ public class ValidatePhoneActivity extends BaseActivity {
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.Response res = new Gson().fromJson(response.body(), AccountHelper.Response.class);
-//                toast(res.message);
                 if (res.code == 1000) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ConsUtils.INTENT, ConsUtils.INTENT_REGISTER);
-                    Register register = new Register();
-                    register.mobilePhone = picker.getSelectedCountryCodeWithPlus() + mPhone;
-                    bundle.putSerializable(ConsUtils.REGISTRATION, register);
-                    overlay(PatternActivity.class, bundle);
-                    AppFuncs.dismissKeyboard(ValidatePhoneActivity.this);
+                    showOKDialog(res.message);
+
+                    PopupUtils.showCustomDialog(mContext, "", res.message, R.string.ok, -1, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent();
+                            intent.putExtra("pattern",picker.getSelectedCountryCodeWithPlus() + edVerifyPhone.getText().toString().trim());
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }, null);
+
                 }else {
                     showOKDialog(res.message);
                 }
             }
+
+            @Override
+            public void error(Response<String> response) {
+                super.error(response);
+                showErroe();
+            }
         });
+
+
     }
 
     private void validatePhone(String selectedCountryCodeWithPlus, String phone) {
@@ -160,7 +166,7 @@ public class ValidatePhoneActivity extends BaseActivity {
         helper.data.checkRegistered = true;
         helper.data.sendValidationCode = true;
         helper.data.countryCode = selectedCountryCodeWithPlus;
-        helper.data.codeType = ConsUtils.REGISTRATION;
+        helper.data.codeType = ConsUtils.CHANGE_MOBILE;
         helper.data.phone = phone;
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
@@ -172,7 +178,12 @@ public class ValidatePhoneActivity extends BaseActivity {
                 }else {
                 showOKDialog(res.message);
                 }
-//                toast(res.message);
+            }
+
+            @Override
+            public void error(Response<String> response) {
+                super.error(response);
+                showErroe();
             }
         });
     }

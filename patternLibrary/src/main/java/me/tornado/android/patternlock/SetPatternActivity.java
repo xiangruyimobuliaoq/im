@@ -186,12 +186,13 @@ public class SetPatternActivity extends BasePatternActivity
                 if (newPattern.size() < mMinPatternSize) {
                     updateStage(Stage.DrawTooShort);
                 } else if (newPattern.equals(mPattern)) {
-                    // updateStage(Stage.ConfirmCorrect);
+//                     updateStage(Stage.ConfirmCorrect);
                     onSetPattern(mPattern);
                     onConfirmed();
-                } else {
-                    updateStage(Stage.ConfirmWrong);
                 }
+//                else {
+//                    updateStage(Stage.ConfirmWrong);
+//                }
                 break;
             default:
                 throw new IllegalStateException("Unexpected stage " + mStage + " when "
@@ -249,15 +250,14 @@ public class SetPatternActivity extends BasePatternActivity
         mStage = newStage;
 
         if (mStage == Stage.DrawTooShort) {
-            mCountdownText.setVisibility(View.VISIBLE);
-            mCountdownText.setText(getString(R.string.pl_error_pattern_too_short));
+            mMessageTextError.setVisibility(View.VISIBLE);
+            mMessageTextError.setText(getString(R.string.pl_error_pattern_too_short));
         } else {
             mMessageText.setText(mStage.messageId);
         }
 
         mLeftButton.setText(mStage.leftButtonState.textId);
         mLeftButton.setEnabled(mStage.leftButtonState.enabled);
-
         mRightButton.setText(mStage.rightButtonState.textId);
         mRightButton.setEnabled(mStage.rightButtonState.enabled);
 
@@ -266,7 +266,7 @@ public class SetPatternActivity extends BasePatternActivity
         switch (mStage) {
             case Draw:
                 // clearPattern() resets display mode to DisplayMode.Correct.
-                mCountdownText.setText("");
+//                mCountdownText.setText("");
                 mPatternView.clearPattern();
                 break;
             case DrawTooShort:
@@ -277,7 +277,7 @@ public class SetPatternActivity extends BasePatternActivity
                 break;
             case Confirm:
                 mPatternView.clearPattern();
-                mCountdownText.setText("");
+//                mCountdownText.setText("");
                 break;
             case ConfirmWrong:
                 mPatternView.setDisplayMode(PatternView.DisplayMode.Wrong);

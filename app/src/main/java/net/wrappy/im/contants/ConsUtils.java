@@ -31,6 +31,7 @@ public class ConsUtils {
     public static final String TOKENTYPE = "token_type";
     public static final String PROFILE = "profile";
     public static final String REGISTRATION = "registration";
+    public static final String CHANGE_MOBILE = "change_mobile";
     public static final String VALIDATE_SMS_CODE = "validate_sms_code";
     public static final String VALIDATE_EMAIL = "validate_email";
     public static final String USERNAME = "username";
@@ -44,6 +45,13 @@ public class ConsUtils {
     public static String MAIN_CHAT = "CHAT";
     public static String MAIN_MY_PAGE = "MY_PAGE";
     public static String WRAPPY_USERNAME_FROMAT = "^[a-zA-Z][a-zA-Z0-9_]{5,29}$";//正则表达式   用户名称格式
+    public static String WRAPPY_CONTENT_DATA = "ldr_content_data_1";
+    public static String WRAPPY_EXIT = "WRAPPY_EXIT";
+    public static String WRAPPY_SECRETKEY = "WRAPPY_SECRETKEY";
+    public static String WRAPPY_MODIFY_PASSWORD = "WRAPPY_MODIFY_PASSWORD";
+    public static String WRAPPY_GESTURE_PASSWORD = "WRAPPY_GESTURE_PASSWORD";
+    public static String WRAPPY_LOGIN_USERNAME = "WRAPPY_LOGIN_USERNAME";
+    public static String WRAPPY_LOGIN_PASSWORD = "WRAPPY_LOGIN_PASSWORD";
 
 
     public static String NORMAL = "NORMAL";

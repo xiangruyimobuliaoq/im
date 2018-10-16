@@ -1,5 +1,6 @@
 package net.wrappy.im.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,10 +17,12 @@ import net.wrappy.im.BaseActivity;
 import net.wrappy.im.R;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
+import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.AccountHelper.VALIDATE_PASSWORD;
 import net.wrappy.im.model.Register;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 
@@ -34,9 +37,9 @@ import butterknife.BindView;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-@Layout(layoutId = R.layout.activity_inputpasswordregister)
-public class InputPasswordRegisterActivity extends BaseActivity {
-    private static final String TAG = "InputPasswordRegisterAc";
+@Layout(layoutId = R.layout.activity_modify_password)
+public class ModifyPasswordActivity extends BaseActivity {
+    private static final String TAG = "ModifyPasswordActivity";
     @BindView(R.id.btcreatepassword)
     Button mBtnLogin;
     @BindView(R.id.back)
@@ -45,19 +48,25 @@ public class InputPasswordRegisterActivity extends BaseActivity {
     TextView title;
     @BindView(R.id.edtpassword)
     EditText edtpassword;
-    @BindView(R.id.edtusername)
-    EditText edtusername;
     @BindView(R.id.edtconfirmpassword)
     EditText edtconfirmpassword;
-    private Register mRegister;
     private String mPwd;
     private String mPwd2;
-    private String mun;
+    private String secretKey,gesturePassword;
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ManagementAllActivity.removeActivityTwo(this);
+    }
 
     @Override
     protected void init() {
-        mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
-        title.setText(getResources().getString(R.string.registration));
+        ManagementAllActivity.addActivityTwo(this);
+        secretKey = getIntent().getStringExtra(ConsUtils.WRAPPY_SECRETKEY);
+        gesturePassword = getIntent().getStringExtra(ConsUtils.WRAPPY_GESTURE_PASSWORD);
+        title.setText(getResources().getString(R.string.reset_password));
         showHidePassword(edtpassword, false);
         showHidePassword(edtconfirmpassword, false);
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
@@ -65,11 +74,7 @@ public class InputPasswordRegisterActivity extends BaseActivity {
             public void onClick(View v) {
                 mPwd = edtpassword.getText().toString().trim();
                 mPwd2 = edtconfirmpassword.getText().toString().trim();
-                mun = edtusername.getText().toString().trim();
                 check();
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(ConsUtils.REGISTRATION, mRegister);
-//                overlay(RegistrationSecurityQuestionActivity.class, bundle);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -81,52 +86,48 @@ public class InputPasswordRegisterActivity extends BaseActivity {
     }
 
     private void checkFromServer() {
+
+
+        AccountHelper.sendModifyPasswordData spd = new AccountHelper.sendModifyPasswordData();
+        spd.secretKey = secretKey;
+        spd.newPassword = mPwd;
+        spd.newPatternPassword = gesturePassword;
         AppFuncs.showProgressWaiting(this);
-        VALIDATE_PASSWORD helper = new VALIDATE_PASSWORD();
-        helper.data.username = mun;
-        helper.data.password = mPwd;
-        helper.language = "en";
-        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
+        OkUtil.privatePut( this,Url.accounts + "/resetPassword", new Gson().toJson(spd),new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 Log.e(TAG, "success: " + response.body().toString());
                 AppFuncs.dismissProgressWaiting();
-                VALIDATE_PASSWORD.Response json = new Gson().fromJson(response.body(), VALIDATE_PASSWORD.Response.class);
-                if (json.code == 1000) {
-                    mRegister.extendedInfo.username = mun;
-                    mRegister.extendedInfo.password = mPwd;
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(ConsUtils.REGISTRATION, mRegister);
-                    overlay(RegistrationSecurityQuestionActivity.class, bundle);
-                } else if (json.code == -1020) {
-                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "", json.message);
-                } else {
-//                    String s = "";
-//                    for (String ss : json.data
-//                            ) {
-//                        s += ss + ",";
-//                    }
-                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "", json.message);
+                AccountHelper.Response json = new Gson().fromJson(response.body().toString(), AccountHelper.Response.class);
+                if (json.code == 1000){
+                    PopupUtils.showCustomDialog(mContext, "", json.message, R.string.ok, -1, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+//                            Intent intent = new Intent(ModifyPasswordActivity.this,InputPasswordLoginActivity.class);
+//                            startActivity(intent);
+                            ManagementAllActivity.finishAllActivityTwo();
+                        }
+                    }, null);
+                }else {
+                    PopupUtils.showCustomDialog(mContext,"",json.message, R.string.ok,-1,null,null);
                 }
-            }
-            @Override
-            public void error(Response<String> response) {
-                Log.e(TAG, "error: " + response.body());
-//                AppFuncs.dismissProgressWaiting();
 
             }
+
+            @Override
+            public void error(Response<String> response) {
+                super.error(response);
+                AppFuncs.dismissProgressWaiting();
+                Log.e(TAG, "error: " + response.body());
+                showErroe();
+            }
         });
+
+
     }
 
     private void check() {
-        if (TextUtils.isEmpty(mun)) {
-            showOKDialog("Username can't be empty.");
-            return;
-        }
-        if (!mun.matches("^[a-zA-Z0-9]{6,48}$")){
-            showOKDialog("check user name format, 6-48 letters, numbers, beginning with letters.");
-            return;
-        }
+
         if (TextUtils.isEmpty(mPwd)) {
             showOKDialog("Password can't be empty.");
             return;

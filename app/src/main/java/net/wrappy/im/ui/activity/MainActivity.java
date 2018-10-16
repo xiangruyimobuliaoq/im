@@ -1,6 +1,7 @@
 package net.wrappy.im.ui.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +30,8 @@ import net.wrappy.im.ui.fragment.ProfileFragment;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.ui.view.NoScrollViewPager;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.PopupUtils;
+import net.wrappy.im.util.SpUtil;
 import net.wrappy.im.util.UIUtil;
 
 import java.util.ArrayList;
@@ -80,9 +83,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        btnHeaderEdit = findViewById(R.id.btnHeaderEdit);
+        if (!SpUtil.getSave(ConsUtils.WRAPPY_EXIT)){
+            PopupUtils.showCustomDialog(mContext,"",getResources().getString(R.string.welcome),R.string.ok,-1,null,null);
+        }
+        SpUtil.spSave(ConsUtils.WRAPPY_EXIT,true);
         initViewPager();
         initTabLayout();
-        btnHeaderEdit = findViewById(R.id.btnHeaderEdit);
         btnHeaderEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

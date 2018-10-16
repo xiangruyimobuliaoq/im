@@ -110,6 +110,11 @@ public abstract class BaseLazyFragment extends Fragment {
         mScreenWidth = displayMetrics.widthPixels;
 
 //        init();
+        initTwo();
+    }
+
+    public void initTwo() {
+
     }
 
     @Override

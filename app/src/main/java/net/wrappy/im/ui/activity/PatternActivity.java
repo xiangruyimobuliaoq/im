@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -44,21 +45,34 @@ public class PatternActivity extends SetPatternActivity {
     private static final String TAG = "PatternActivity";
     private String mIntentType;
     private Register mRegister;
+    String modifyPasswrod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        modifyPasswrod = getIntent().getStringExtra(ConsUtils.WRAPPY_MODIFY_PASSWORD);
         mIntentType = getIntent().getStringExtra(ConsUtils.INTENT);
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
         if (!TextUtils.equals(mIntentType, ConsUtils.INTENT_REGISTER)){
             setTypePattern(TYPE_NOCONFIRM);
         }
         if (ConsUtils.INTENT_CHECK.equals(mIntentType)){
-            title.setText(getResources().getString(me.tornado.android.patternlock.R.string.update_user_info));
+            if (TextUtils.isEmpty(modifyPasswrod)){
+              title.setText(getResources().getString(me.tornado.android.patternlock.R.string.update_user_info));
+            }else {
+              title.setText(getResources().getString(me.tornado.android.patternlock.R.string.update_user_info));
+            }
         }else {
             title.setText(getResources().getString(me.tornado.android.patternlock.R.string.registration));
         }
+        //忘记手势密码
+        bottomText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     public static Intent getStartIntent(Activity context) {
@@ -67,7 +81,7 @@ public class PatternActivity extends SetPatternActivity {
 
     @Override
     protected void onSetPattern(List<PatternView.Cell> pattern) {
-        Intent intent;
+        Intent intent = null;
 //        String ss = "";
 //        list.clear();
 //        String str = PatternUtils.patternToString(pattern);
@@ -77,7 +91,7 @@ public class PatternActivity extends SetPatternActivity {
 //        for (int i = 0; i <list.size() ; i++) {
 //            ss = ss + list.get(i);
 //        }
-        Log.e(TAG, "九宫格数据: " + PatternUtils.patternToString(pattern));
+              Log.e(TAG, "九宫格数据: " + PatternUtils.patternToString(pattern));
                 switch (mIntentType) {
             case ConsUtils.INTENT_CHECK:
                 intent = new Intent();
@@ -89,13 +103,21 @@ public class PatternActivity extends SetPatternActivity {
             case ConsUtils.INTENT_LOGIN:
                 intent = new Intent(this, InputPasswordLoginActivity.class);
                 startActivity(intent);
+                finish();
                 break;
             case ConsUtils.INTENT_REGISTER:
                 String s = PatternUtils.patternToString(pattern);
+                if (TextUtils.isEmpty(modifyPasswrod)){
                 mRegister.extendedInfo.patternPassword = s;
                 intent = new Intent(this, InputPasswordRegisterActivity.class);
                 intent.putExtra(ConsUtils.REGISTRATION, mRegister);
                 startActivity(intent);
+                }else {
+                    intent = new Intent();
+                    intent.putExtra("pattern", s);
+                    setResult(RESULT_OK, intent);
+                }
+                finish();
                 break;
         }
     }

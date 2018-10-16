@@ -147,6 +147,12 @@ public class AccountHelper {
         }
     }
 
+    public static class MODIFY_EMAIL {
+
+        public String email;
+
+
+    }
     public static class VALIDATE_EMAIL {
         /**
          * type : validate_phone
@@ -249,4 +255,23 @@ public class AccountHelper {
             public String type;
         }
     }
+
+    /**
+     *  重新设置密码传的参数
+     */
+    public static class sendModifyPasswordData {
+
+        public String newPassword;//新密码
+        public String newPatternPassword;//新手势密码
+        public String secretKey;
+    }
+    /**
+     *
+     */
+    public static class errorData {
+
+        public String error;//
+        public String error_description;
+    }
+
 }

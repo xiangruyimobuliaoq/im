@@ -4,7 +4,8 @@ import android.app.Application;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.HttpHeaders;
-
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.UIUtil;
@@ -28,6 +29,12 @@ public class App extends Application {
         UIUtil.init(this);
         OkUtil.init(this);
         app = this;
+        // 这里实现SDK初始化，appId替换成你的在Bugly平台申请的appId
+        // 调试时，将第三个参数改为true
+        CrashReport.initCrashReport(getApplicationContext(), "7ffd78a89e", true);
+        //  调用init方法
+//        Bugly.init(getApplicationContext(), APP_ID, false);
+
     }
 
     public void initOkgo() {

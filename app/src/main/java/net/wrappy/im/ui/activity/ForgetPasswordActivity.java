@@ -11,6 +11,7 @@ import net.wrappy.im.R;
 import net.wrappy.im.ui.fragment.ForgetPasswordQuestionFragment;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppDelegate;
+import net.wrappy.im.util.ManagementAllActivity;
 
 import butterknife.ButterKnife;
 
@@ -28,6 +29,12 @@ public class ForgetPasswordActivity extends BaseActivity implements AppDelegate{
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ManagementAllActivity.removeActivityTwo(this);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forget_password_question_activity);
@@ -36,6 +43,7 @@ public class ForgetPasswordActivity extends BaseActivity implements AppDelegate{
 //        getSupportActionBar().setTitle(R.string.forget_password);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         goToQuestionFragment();
+        ManagementAllActivity.addActivityTwo(this);
     }
 
     @Override

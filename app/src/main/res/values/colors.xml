@@ -16,6 +16,7 @@
 
     <color name="text_black_color">#000000</color>
     <color name="background_gainsboro">#f2f2f2</color>
+    <color name="cyan">#007aff</color>
     <color name="menu_text_active">#ea657c</color>
     <color name="bg_menu_tab">#f9f9f9</color>
     <color name="line">#D4D4D4</color>
