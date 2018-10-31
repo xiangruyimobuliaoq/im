@@ -3,6 +3,7 @@ package net.wrappy.im.ui.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -37,6 +38,7 @@ import net.wrappy.im.model.BottomSheetListener;
 import net.wrappy.im.model.ModificationInfo;
 import net.wrappy.im.model.Result;
 import net.wrappy.im.model.SaveUserFile;
+import net.wrappy.im.ui.activity.LoginActivity;
 import net.wrappy.im.ui.activity.MainActivity;
 import net.wrappy.im.ui.activity.ModifierSecurityQuestionActivity;
 import net.wrappy.im.ui.activity.ModifyEmailActivity;
@@ -181,7 +183,7 @@ public class ProfileFragment extends BaseFragment {
                 }
             }
         });
-        //更新
+        //更新用户信息
         btnProfileSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -245,6 +247,7 @@ public class ProfileFragment extends BaseFragment {
                             ConsUtils.putAdminAccestoken(null);
                             SpUtil.spSave(ConsUtils.WRAPPY_EXIT,false);
                             ManagementAllActivity.finishAllActivity();
+                            toActivity(LoginActivity.class);
 
                         }
 
@@ -267,9 +270,10 @@ public class ProfileFragment extends BaseFragment {
         tvEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ModifyEmailActivity.class);
-                intent.putExtra("tvEmail",tvEmail.getText().toString().trim());
-                startActivity(intent);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(ConsUtils.INTENT, ConsUtils.INTENT_CHECK);
+                overlayForResult(ModifyEmailActivity.class, 97, bundle);
 
             }
         });
@@ -290,20 +294,24 @@ public class ProfileFragment extends BaseFragment {
         }else if (requestCode == 98 && resultCode == Activity.RESULT_OK){
             pattern = data.getStringExtra("pattern");
             tvPhone.setText(pattern);
+        }else if (requestCode == 97 && resultCode == Activity.RESULT_OK){
+            pattern = data.getStringExtra("pattern");
+            tvEmail.setText(pattern);
         }
     }
 
-    private void verifyPattenrnPassword(final String pattern, final String s) {
+    private void verifyPattenrnPassword(final String pattern, final String str) {
 
         AppFuncs.showProgressWaiting(getActivity());
         OkUtil.publicPost( Url.accounts + "/validatePatternPassword/"+ pattern, "",new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
-                Log.e(TAG, "success: " + response.body().toString());
                 AppFuncs.dismissProgressWaiting();
+                Log.e(TAG, "success: " + response.body().toString());
                 AccountHelper.Response json = new Gson().fromJson(response.body().toString(), AccountHelper.Response.class);
                 if (json.code == 1000){
-                    if (TextUtils.isEmpty(s)){
+                    if (TextUtils.isEmpty(str)){
+                     AppFuncs.dismissProgressWaiting();
                     Intent intent = new Intent(mContext, ModifierSecurityQuestionActivity.class);
                     intent.putExtra(ConsUtils.USERNAME,mAuth.account.extendedInfo.username);
                     startActivity(intent);
@@ -343,7 +351,7 @@ public class ProfileFragment extends BaseFragment {
         mAuth.account.mobilePhone = tvPhone.getText().toString().trim();
         mAuth.account.email = tvEmail.getText().toString().trim();
         mAuth.account.extendedInfo.avatar = mBitmapAvatar;
-        mAuth.account.extendedInfo.backGroundImage = mBitmapHeader;
+        mAuth.account.extendedInfo.backgroundImage = mBitmapHeader;
         AppFuncs.showProgressWaiting(getActivity());
         Log.e(TAG, "onActivityResult: " + new Gson().toJson(info));
         OkUtil.privatePut((BaseActivity) getActivity(), Url.accounts, new Gson().toJson(info), new OkUtil.Callback() {
@@ -351,10 +359,16 @@ public class ProfileFragment extends BaseFragment {
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
                 Log.e("123", response.body());
-                AccountHelper.Response json = new Gson().fromJson(response.body(), AccountHelper.Response.class);
+                AccountHelper.updateUserInformation json = new Gson().fromJson(response.body(), AccountHelper.updateUserInformation.class);
                 //修改成功
                 if (json.code == 1000){
                     ModifySuccees();
+                    mAuth.account.email = json.data.email;
+                    mAuth.account.mobilePhone = json.data.mobilePhone;
+                    mAuth.account.firstName = json.data.firstName;
+                    mAuth.account.gender = json.data.gender;
+                    mAuth.account.extendedInfo.avatar = json.data.extendedInfo.avatar;
+                    mAuth.account.extendedInfo.backgroundImage = json.data.extendedInfo.backgroundImage;
                     SpUtil.saveObj(ConsUtils.PROFILE, mAuth);
                     //修改失败
                 }else {
@@ -391,28 +405,21 @@ public class ProfileFragment extends BaseFragment {
             edFullName.requestFocus();
             edFullName.setFocusableInTouchMode(true);
             txtUsername.setTextColor(getResources().getColor(R.color.line));
-            tvPhone.setTextColor(getResources().getColor(R.color.line));
-            tvEmail.setTextColor(getResources().getColor(R.color.line));
+            tvPhone.setTextColor(getResources().getColor(R.color.text_black_color));
+            tvEmail.setTextColor(getResources().getColor(R.color.text_black_color));
             ll_update_or_cancel_update.setVisibility(View.VISIBLE);
-//            btnPhotoCameraAvatar.setVisibility(View.VISIBLE);
-//            btnProfileCameraHeader.setVisibility(View.VISIBLE);
         } else {
-//            edEmail.clearFocus();
             tvPhone.setEnabled(false);
             tvEmail.setEnabled(false);
             spnProfile.setEnabled(false);
             txtUsername.setEnabled(false);
             tvPhone.setEnabled(false);
-            txtUsername.setTextColor(getResources().getColor(R.color.line));
-            tvPhone.setTextColor(getResources().getColor(R.color.line));
-            tvEmail.setTextColor(getResources().getColor(R.color.line));
-//            edFullName.clearFocus();
             edFullName.setEnabled(false);
-//            edPhone.setTextColor(Color.BLACK);
-//            txtUsername.setTextColor(Color.BLACK);
+            edFullName.setFocusableInTouchMode(false);
+            txtUsername.setTextColor(getResources().getColor(R.color.line));
+            tvPhone.setTextColor(getResources().getColor(R.color.text_black_color));
+            tvEmail.setTextColor(getResources().getColor(R.color.text_black_color));
             ll_update_or_cancel_update.setVisibility(View.GONE);
-//            btnPhotoCameraAvatar.setVisibility(View.GONE);
-//            btnProfileCameraHeader.setVisibility(View.GONE);
         }
     }
 

@@ -55,15 +55,9 @@ public class ModifyPasswordActivity extends BaseActivity {
     private String secretKey,gesturePassword;
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ManagementAllActivity.removeActivityTwo(this);
-    }
 
     @Override
     protected void init() {
-        ManagementAllActivity.addActivityTwo(this);
         secretKey = getIntent().getStringExtra(ConsUtils.WRAPPY_SECRETKEY);
         gesturePassword = getIntent().getStringExtra(ConsUtils.WRAPPY_GESTURE_PASSWORD);
         title.setText(getResources().getString(R.string.reset_password));
@@ -96,7 +90,7 @@ public class ModifyPasswordActivity extends BaseActivity {
         OkUtil.privatePut( this,Url.accounts + "/resetPassword", new Gson().toJson(spd),new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
-                Log.e(TAG, "success: " + response.body().toString());
+                Log.e(TAG, "success: " + response.body());
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.Response json = new Gson().fromJson(response.body().toString(), AccountHelper.Response.class);
                 if (json.code == 1000){
@@ -105,13 +99,13 @@ public class ModifyPasswordActivity extends BaseActivity {
                         public void onClick(View v) {
 //                            Intent intent = new Intent(ModifyPasswordActivity.this,InputPasswordLoginActivity.class);
 //                            startActivity(intent);
-                            ManagementAllActivity.finishAllActivityTwo();
+                            ManagementAllActivity.finishAllActivity();
+                            overlay(LoginActivity.class);
                         }
                     }, null);
                 }else {
                     PopupUtils.showCustomDialog(mContext,"",json.message, R.string.ok,-1,null,null);
                 }
-
             }
 
             @Override

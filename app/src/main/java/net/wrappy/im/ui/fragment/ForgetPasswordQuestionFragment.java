@@ -108,28 +108,15 @@ public class ForgetPasswordQuestionFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ManagementAllActivity.removeActivityTwo(getActivity());
+        ManagementAllActivity.removeActivity(getActivity());
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (sa != null){
-        AppFuncs.dismissProgressWaiting();
-        }
-    }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        AppFuncs.dismissProgressWaiting();
-//    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.forget_password_question_fragment, null);
-        ManagementAllActivity.addActivityTwo(getActivity());
+        ManagementAllActivity.addActivity(getActivity());
         ButterKnife.bind(this, mainView);
         type = getArguments().getInt(TYPE, 0);
         if (type == 1) {
@@ -227,6 +214,7 @@ public class ForgetPasswordQuestionFragment extends Fragment {
                       Bundle bundle = new Bundle();
                       bundle.putString(ConsUtils.INTENT, ConsUtils.INTENT_REGISTER);
                       bundle.putString(ConsUtils.WRAPPY_MODIFY_PASSWORD,ConsUtils.WRAPPY_MODIFY_PASSWORD);
+                      bundle.putString(ConsUtils.WRAPPY_SECRETKEY,secretKey);
                       overlayForResult(PatternActivity.class, 100, bundle);
                   }else {
                       showOKDialog(vp.getMessage());
@@ -262,7 +250,6 @@ public class ForgetPasswordQuestionFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
-            AppFuncs.showProgressWaiting(getActivity());
             String pattern = data.getStringExtra("pattern");
             Intent intent = new Intent(getActivity(), ModifyPasswordActivity.class);
             intent.putExtra(ConsUtils.WRAPPY_SECRETKEY,secretKey);

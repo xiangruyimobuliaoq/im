@@ -22,6 +22,7 @@ import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.UserNameStatus;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 import net.wrappy.im.util.Utils;
@@ -30,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
+import okhttp3.internal.Util;
 
 /**
  * 创建者     彭龙
@@ -44,6 +46,8 @@ import butterknife.BindView;
 public class LoginActivity extends BaseActivity {
 
     private static final String TAG = "LoginActivity";
+    @BindView(R.id.txtLoginVersionName)
+    TextView txtLoginVersionName;
     @BindView(R.id.forgetID)
     TextView forgetID;
     @BindView(R.id.btnShowLogin)
@@ -55,6 +59,7 @@ public class LoginActivity extends BaseActivity {
     public static final int REQUEST_CODE_INPUT_NEW_PASSWORD = 1113;
     @Override
     protected void init() {
+        txtLoginVersionName.setText("V" + Utils.getAppVersionName(mContext));
 //        forgetID.setText(getResources().getString(R.string.Forget_username).toLowerCase());
         forgetID.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,17 +72,14 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 String s = edtUserMame.getText().toString().trim();
 
-//                Log.e(TAG, "毫少转成天、时、分、秒 " + Utils.formatTime(Long.valueOf(edtUserMame.getText().toString().trim())));
-//                Log.e(TAG, "毫少转成天、时、分、秒 " + Utils.formatTime(Long.parseLong(edtUserMame.getText().toString().trim())));
-
                 if (TextUtils.isEmpty(s)){
-                    showOKDialog("Username can not be empty");
+                    showOKDialog(getResources().getString(R.string.User_ID_cannot_be_empty));
                     return;
                 }
                 Pattern p= Pattern.compile(ConsUtils.WRAPPY_USERNAME_FROMAT);
                 Matcher m=p.matcher(s);
                 if(!m.matches()){
-                    showOKDialog("check username format, 6-30 letters, numbers, beginning with letters.");
+                    showOKDialog(getResources().getString(R.string.check_User_ID_format_letters_numbers_beginning_with_letters));
                     return;
                 }
                 sendData(s);
@@ -95,6 +97,7 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
+
     private void sendData(final String s) {
 
         AppFuncs.showProgressWaiting(LoginActivity.this);
@@ -110,7 +113,9 @@ public class LoginActivity extends BaseActivity {
                 if (us.code == 1000){
                     Bundle bundle = new Bundle();
                     bundle.putString(ConsUtils.USERNAME, s);
-                    overlay(InputPasswordLoginActivity.class, bundle);
+                    bundle.putInt(ConsUtils.NUMBER_OF_LOCKS, us.data.count);
+                    overlayForResult(InputPasswordLoginActivity.class, 100, bundle);
+//                    overlay(InputPasswordLoginActivity.class, bundle);
                 }else {
                     String status = us.data.status;
                     if (ConsUtils.NORMAL.equals(status)){
@@ -119,8 +124,21 @@ public class LoginActivity extends BaseActivity {
                      /** 帐号不存在*/
                     showOKDialog(us.message);
                     }else if (ConsUtils.LOCKED.equals(status)){
-                        /** 帐号被锁，剩余多少秒后解锁*/
-                    showOKDialog(us.message + "The remaining " + us.data.lockLeftSeconds /1000+  " seconds");
+                        int count = us.data.count;
+                        if (count > 6){
+                            /** 帐号被锁，剩余多少秒后解锁*/
+                            showOKDialog(us.message + ", please contact our customer service");
+                        }else {
+                            try {
+                             /** 帐号被锁，剩余多少秒后解锁*/
+//                            int seconds = Integer.parseInt(us.data.lockLeftSeconds);
+//                                Log.e(TAG, "时间: " + seconds);
+//                                Log.e(TAG, "时间: " + Utils.secToTime(seconds));
+                            showOKDialog(us.message + ", the remaining \n" + Utils.formatTime(us.data.lockLeftSeconds * 1000));
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             }
@@ -134,6 +152,20 @@ public class LoginActivity extends BaseActivity {
 
 
     }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String pattern;
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            pattern = data.getStringExtra("pattern");
+             showOKDialog(pattern);
+        }
+    }
+
+
 
     public static void start(Activity activity) {
         Intent intent = new Intent(activity, LauncherActivity.class);

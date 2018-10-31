@@ -27,7 +27,7 @@ public class SetPatternActivity extends BasePatternActivity
         m_typePattern = type;
         if (m_typePattern == TYPE_NOCONFIRM) {
             view.setVisibility(View.GONE);
-            bottomText.setVisibility(View.VISIBLE);
+            bottomText.setVisibility(View.GONE);
             bottomText.setText(this.getResources().getString(R.string.pl_forgot_pattern));
         } else if (m_typePattern == TYPE_CONFIRM) {
             view.setVisibility(View.VISIBLE);
@@ -183,12 +183,17 @@ public class SetPatternActivity extends BasePatternActivity
                 break;
             case Confirm:
             case ConfirmWrong:
+                mMessageText.setVisibility(View.VISIBLE);
                 if (newPattern.size() < mMinPatternSize) {
                     updateStage(Stage.DrawTooShort);
                 } else if (newPattern.equals(mPattern)) {
 //                     updateStage(Stage.ConfirmCorrect);
                     onSetPattern(mPattern);
                     onConfirmed();
+                }else {
+                    mMessageText.setVisibility(View.GONE);
+                    mMessageTextError.setVisibility(View.VISIBLE);
+                    mMessageTextError.setText(getResources().getString(R.string.the_passwords_do_not_match));
                 }
 //                else {
 //                    updateStage(Stage.ConfirmWrong);

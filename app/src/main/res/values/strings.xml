@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wrappy</string>
+    <string name="app_name">N-Wrappy-DEV</string>
 
 
     <string name="please_enter_5_bit_verification_code">Please enter 5 bit verification code</string>
@@ -25,6 +25,8 @@
     <string name="lock_screen_confirm_passphrase_two">Input confirm password</string>
     <string name="confirm_new_password">Confirm new password</string>
     <string name="add_people">Add People</string>
+    <string name="User_ID_cannot_be_empty">User ID cannot be empty</string>
+    <string name="check_User_ID_format_letters_numbers_beginning_with_letters"> Check User ID format, 6-30 letters, numbers, beginning with letters</string>
 
     <string name="Page1Titlenull"></string>
     <string name="Page1Title">Wrappy</string>
@@ -51,7 +53,7 @@
     <string name="Page11Message">A pioneer in an innovative\n&amp; constantly evolving era.</string>
 
     <string name="Forget_username">Forget username ?</string>
-    <string name="id_or_username">Username</string>
+    <string name="id_or_username">User ID</string>
     <string name="forget_password">Reset Password</string>
     <string name="login">Login</string>
     <string name="waiting_dialog">Waiting…</string>
@@ -153,14 +155,16 @@
     <string name="new_group">New Group</string>
     <string name="about_us">About us</string>
     <string name="please_enter_the_email_and_cell_phone_number">Please enter the Email and cell phone number</string>
+    <string name="send_recovery_email_hit">Please enter the email address provided when you register, The system will send an email to your email address, then enter your email address, copy the link to open in your mobile browser, jump to the app and complete the reset password </string>
     <string name="faq">FAQ</string>
     <string name="logout">Logout</string>
     <string name="remove">Remove</string>
     <string name="sent">Sent</string>
     <string name="received">Received</string>
     <string name="all">All</string>
-    <string name="username_">Username*</string>
-    <string name="username">Username</string>
+    <string name="username_">User ID*</string>
+    <string name="username">User ID</string>
+    <string name="input_your_registered_email_address">Input your registered email address</string>
     <string name="email">Email</string>
     <string name="email_l">Email :</string>
     <string name="mobile_phone">Mobile Phone</string>
@@ -252,7 +256,7 @@
     <string name="message_kicked_from_group">%s is removed by admin</string>
     <string name="comming_soon">coming soon</string>
 
-    <string name="create_new_username">Create a username</string>
+    <string name="create_new_username">Create a User ID</string>
     <string name="create_new_password">Create a password</string>
     <string name="new_password">New password</string>
     <string name="input_your_confidential_info">Input Your Confidential Info</string>
@@ -261,7 +265,7 @@
     <string name="input_password">Input new password</string>
     <string name="input_new_password">Input your new password</string>
     <string name="input_new_username">Input your new username</string>
-    <string name="input_username">Input your username</string>
+    <string name="input_username">Input your User ID</string>
     <string name="input_repeat_password">Confirm new password</string>
     <string name="fullname">Nickname</string>
     <string name="fullname_">Nickname</string>

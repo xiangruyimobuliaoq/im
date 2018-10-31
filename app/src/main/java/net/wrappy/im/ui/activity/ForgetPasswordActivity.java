@@ -31,7 +31,6 @@ public class ForgetPasswordActivity extends BaseActivity implements AppDelegate{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ManagementAllActivity.removeActivityTwo(this);
     }
 
     @Override
@@ -43,7 +42,6 @@ public class ForgetPasswordActivity extends BaseActivity implements AppDelegate{
 //        getSupportActionBar().setTitle(R.string.forget_password);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         goToQuestionFragment();
-        ManagementAllActivity.addActivityTwo(this);
     }
 
     @Override

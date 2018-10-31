@@ -133,8 +133,6 @@ public class ModifyPhoneActivity extends BaseActivity {
                 AppFuncs.dismissProgressWaiting();
                 AccountHelper.Response res = new Gson().fromJson(response.body(), AccountHelper.Response.class);
                 if (res.code == 1000) {
-                    showOKDialog(res.message);
-
                     PopupUtils.showCustomDialog(mContext, "", res.message, R.string.ok, -1, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

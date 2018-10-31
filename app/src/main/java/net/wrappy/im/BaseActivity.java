@@ -56,6 +56,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     public Context mContext;
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        init();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -70,7 +76,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             StrictMode.setVmPolicy(builder.build());
         }
         mContext = this;
-        ManagementAllActivity.addActivity(BaseActivity.this);
+        ManagementAllActivity.addActivity(this);
 
         init();
     }
@@ -78,13 +84,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ManagementAllActivity.removeActivity(BaseActivity.this);
-        cancel();
+        ManagementAllActivity.removeActivity(this);
     }
 
-    public void cancel() {
-
-    }
 
     protected abstract void init();
 

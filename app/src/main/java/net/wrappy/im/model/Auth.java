@@ -34,6 +34,7 @@ public class Auth implements Serializable {
     public String jti;
     public String patternPassword;
     public String error_description;
+//    public Aterror error_description = new Aterror();
     public String error;
 
     public static class Account implements Serializable {
@@ -107,7 +108,8 @@ public class Auth implements Serializable {
             public String language;
             public String server;
             public String avatar;
-            public String backGroundImage;
+//            public String backGroundImage;
+            public String backgroundImage;
             public String referralCode;
             public int passwordFailedAttempt;
             public String passwordChangedDate;

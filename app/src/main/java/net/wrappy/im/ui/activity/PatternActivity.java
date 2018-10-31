@@ -19,6 +19,7 @@ import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.Register;
 import net.wrappy.im.util.AppFuncs;
+import net.wrappy.im.util.ManagementAllActivity;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
 
@@ -45,12 +46,13 @@ public class PatternActivity extends SetPatternActivity {
     private static final String TAG = "PatternActivity";
     private String mIntentType;
     private Register mRegister;
-    String modifyPasswrod;
+    String modifyPasswrod,secretKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ManagementAllActivity.addActivity(this);
+        secretKey = getIntent().getStringExtra(ConsUtils.WRAPPY_SECRETKEY);
         modifyPasswrod = getIntent().getStringExtra(ConsUtils.WRAPPY_MODIFY_PASSWORD);
         mIntentType = getIntent().getStringExtra(ConsUtils.INTENT);
         mRegister = (Register) getIntent().getSerializableExtra(ConsUtils.REGISTRATION);
@@ -66,6 +68,12 @@ public class PatternActivity extends SetPatternActivity {
         }else {
             title.setText(getResources().getString(me.tornado.android.patternlock.R.string.registration));
         }
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         //忘记手势密码
         bottomText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +81,13 @@ public class PatternActivity extends SetPatternActivity {
 
             }
         });
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ManagementAllActivity.removeActivity(this);
     }
 
     public static Intent getStartIntent(Activity context) {
@@ -113,9 +128,13 @@ public class PatternActivity extends SetPatternActivity {
                 intent.putExtra(ConsUtils.REGISTRATION, mRegister);
                 startActivity(intent);
                 }else {
-                    intent = new Intent();
-                    intent.putExtra("pattern", s);
-                    setResult(RESULT_OK, intent);
+                    intent = new Intent(mContext, ModifyPasswordActivity.class);
+                    intent.putExtra(ConsUtils.WRAPPY_SECRETKEY,secretKey);
+                    intent.putExtra(ConsUtils.WRAPPY_GESTURE_PASSWORD,s);
+                    startActivity(intent);
+//                    intent = new Intent();
+//                    intent.putExtra("pattern", s);
+//                    setResult(RESULT_OK, intent);
                 }
                 finish();
                 break;

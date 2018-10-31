@@ -10,6 +10,7 @@
     <string name="pl_cancel">取消</string>
     <string name="pl_confirm">确认</string>
     <string name="pl_confirm_pattern">再次绘制图案以确认</string>
+    <string name="the_passwords_do_not_match">两次密码不一致</string>
     <string name="pl_continue">继续</string>
     <string name="pl_draw_pattern">绘制解锁图案</string>
     <string name="pl_draw_pattern_to_unlock">绘制图案以解锁</string>

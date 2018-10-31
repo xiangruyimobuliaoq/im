@@ -22,6 +22,7 @@
     <string name="pl_redraw">Redraw</string>
     <string name="pl_wrong_pattern">Wrong pattern, please retry</string>
     <string name="pl_error_pattern_too_short">Minimum 4 characters in length</string>
+    <string name="the_passwords_do_not_match">Not consistent with the previous drawing, please redraw</string>
 
     <string name="Profile">Profile</string>
     <string name="registration">Registration</string>

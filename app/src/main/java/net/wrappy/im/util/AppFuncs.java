@@ -278,15 +278,17 @@ public class AppFuncs {
         }
         Uri destination = Uri.fromFile(new File(activity.getCacheDir(), UUID.randomUUID().toString()));
 
-        if (isAvarta) {
+        if (isAvarta) {//头像图片
             UCrop.of(source, destination)
                     .withAspectRatio(1, 1)
-                    .withMaxResultSize(100, 100)
+                    .withMaxResultSize(667, 376)
+//                    .withMaxResultSize(100, 100)
                     .start(activity, requestCode);
-        } else {
+        } else {//背景图片
             UCrop.of(source, destination)
                     .withAspectRatio(16, 9)
-                    .withMaxResultSize(320, 180)
+                    .withMaxResultSize(667, 376)
+//                    .withMaxResultSize(320, 180)
                     .start(activity, requestCode);
         }
 

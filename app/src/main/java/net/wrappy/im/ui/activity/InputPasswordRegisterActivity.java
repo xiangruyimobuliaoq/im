@@ -16,12 +16,15 @@ import net.wrappy.im.BaseActivity;
 import net.wrappy.im.R;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
+import net.wrappy.im.model.AccountHelper;
 import net.wrappy.im.model.AccountHelper.VALIDATE_PASSWORD;
 import net.wrappy.im.model.Register;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
 import net.wrappy.im.util.PopupUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -81,7 +84,7 @@ public class InputPasswordRegisterActivity extends BaseActivity {
     }
 
     private void checkFromServer() {
-        AppFuncs.showProgressWaiting(this);
+//        AppFuncs.showProgressWaiting(this);
         VALIDATE_PASSWORD helper = new VALIDATE_PASSWORD();
         helper.data.username = mun;
         helper.data.password = mPwd;
@@ -89,7 +92,7 @@ public class InputPasswordRegisterActivity extends BaseActivity {
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
-                Log.e(TAG, "success: " + response.body().toString());
+                Log.e(TAG, "success: " + response.body());
                 AppFuncs.dismissProgressWaiting();
                 VALIDATE_PASSWORD.Response json = new Gson().fromJson(response.body(), VALIDATE_PASSWORD.Response.class);
                 if (json.code == 1000) {
@@ -98,21 +101,26 @@ public class InputPasswordRegisterActivity extends BaseActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(ConsUtils.REGISTRATION, mRegister);
                     overlay(RegistrationSecurityQuestionActivity.class, bundle);
-                } else if (json.code == -1020) {
-                    PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "", json.message);
+                } else if (json.code == -1000) {
+                    if (json.data == null){
+                        showOKDialog(json.message);
+                    }else {
+                        List<String> data = json.data;
+                        String message = "";
+                        for (int i = 0; i <data.size() ; i++) {
+                              message = message + data.get(i) + ",";
+                        }
+                        showOKDialog(message);
+                    }
                 } else {
-//                    String s = "";
-//                    for (String ss : json.data
-//                            ) {
-//                        s += ss + ",";
-//                    }
                     PopupUtils.showOKDialog(InputPasswordRegisterActivity.this, "", json.message);
                 }
             }
             @Override
             public void error(Response<String> response) {
                 Log.e(TAG, "error: " + response.body());
-//                AppFuncs.dismissProgressWaiting();
+                AppFuncs.dismissProgressWaiting();
+                showErroe();
 
             }
         });
@@ -120,11 +128,11 @@ public class InputPasswordRegisterActivity extends BaseActivity {
 
     private void check() {
         if (TextUtils.isEmpty(mun)) {
-            showOKDialog("Username can't be empty.");
+            showOKDialog(getResources().getString(R.string.User_ID_cannot_be_empty));
             return;
         }
         if (!mun.matches("^[a-zA-Z0-9]{6,48}$")){
-            showOKDialog("check user name format, 6-48 letters, numbers, beginning with letters.");
+            showOKDialog(getResources().getString(R.string.check_User_ID_format_letters_numbers_beginning_with_letters));
             return;
         }
         if (TextUtils.isEmpty(mPwd)) {
@@ -139,6 +147,37 @@ public class InputPasswordRegisterActivity extends BaseActivity {
             showOKDialog("The password entered two times is inconsistent.");
             return;
         }
-        checkFromServer();
+
+        verifyTheAccount();
+    }
+
+    private void verifyTheAccount() {
+
+
+        AppFuncs.showProgressWaiting(this);
+        AccountHelper.VALIDATE_PASSWORD_TWO helper = new AccountHelper.VALIDATE_PASSWORD_TWO();
+        helper.data.username = mun;
+        helper.data.password = mPwd;
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
+            @Override
+            public void success(Response<String> response) {
+                Log.e(TAG, "验证帐号: " + response.body());
+                VALIDATE_PASSWORD.Verification json = new Gson().fromJson(response.body(), VALIDATE_PASSWORD.Verification.class);
+                if (json.code == 1000){
+                    checkFromServer();
+                }else {
+                    AppFuncs.dismissProgressWaiting();
+                    showOKDialog(json.message);
+                }
+            }
+
+            @Override
+            public void error(Response<String> response) {
+                super.error(response);
+                AppFuncs.dismissProgressWaiting();
+                showErroe();
+            }
+        });
+
     }
 }

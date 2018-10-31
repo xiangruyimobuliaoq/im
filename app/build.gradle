@@ -7,7 +7,7 @@ android {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.1.0"
         archivesBaseName = "N-Wrappy-" + versionName
         ndk {
             //设置支持的SO库架构
@@ -25,11 +25,17 @@ android {
     productFlavors {
         free {
             dimension "free"
-//            buildConfigField 'String', 'ROOT_URL', '"https://202.74.1.78:443"'
+
+//            //开发地址
             buildConfigField 'String', 'ROOT_URL', '"https://27.50.36.67:4333"'
-//            buildConfigField 'String', 'ROOT_URL', '"https://192.168.133.198"'
             buildConfigField 'String', 'DOMAIN', '"ejabberd_test.newsupplytech.com"'
-//            buildConfigField 'String', 'DOMAIN', '"xmpp-test.newsupplytech.com"'
+
+//            测试地址
+//            buildConfigField 'String', 'ROOT_URL', '"https://18.182.42.164"'
+//            buildConfigField 'String', 'DOMAIN', '"ejabberd.newsupplytech.com"'
+
+
+
         }
     }
 }
@@ -60,6 +66,19 @@ dependencies {
     implementation 'io.michaelrocks:libphonenumber-android:8.9.10'
     compile 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
     compile 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+
+
+
+
+
+
+    // XMPP通信
+//    compile 'org.igniterealtime.smack:smack-im:4.2.0'
+//    compile 'org.igniterealtime.smack:smack-tcp:4.2.0'
+//    compile "org.igniterealtime.smack:smack-android-extensions:4.2.0"
+//    compile "org.igniterealtime.smack:smack-android:4.2.0"
+
+
 
 
 }

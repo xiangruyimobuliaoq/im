@@ -67,7 +67,7 @@ public class Register implements Serializable {
         public String language;
         public String server;
         public String avatar;  //头像不能够为空
-        public String backGroundImage;//背景可以为空
+        public String backgroundImage;//背景可以为空
     }
 
     public static class SecurityQuestions implements Serializable {

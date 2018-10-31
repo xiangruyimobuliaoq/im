@@ -1,4 +1,5 @@
 package net.wrappy.im.ui.activity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import net.wrappy.im.R;
 import net.wrappy.im.contants.ConsUtils;
 import net.wrappy.im.contants.Url;
 import net.wrappy.im.model.AccountHelper;
+import net.wrappy.im.model.Auth;
 import net.wrappy.im.ui.view.Layout;
 import net.wrappy.im.util.AppFuncs;
 import net.wrappy.im.util.OkUtil;
@@ -58,30 +60,30 @@ public class ModifyEmailActivity extends BaseActivity {
     protected void init() {
         AppFuncs.dismissKeyboard(this);
         title.setText(getResources().getString(R.string.please_input_your_new_email));
-        //发送邮箱验证码
-//        btnVerifyCheck.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String value = txtPin.getValue();
-//                mEmail = email.getText().toString().trim();
-//
-//                if (TextUtils.isEmpty(mEmail)) {
-//                    PopupUtils.showOKDialog(ModifyEmailActivity.this, "", "Please input the email number");
-//                    return;
-//                }
-//
-//                if (TextUtils.isEmpty(value)) {
-//                    showOKDialog(getResources().getString(R.string.please_input_the_sns_code));
-//                    return;
-//                }
-//
-//                if (value.length() != 5){
-//                    showOKDialog(getResources().getString(R.string.please_enter_5_bit_verification_code));
-//                    return;
-//                }
-////                validateCode(value, mPhone);
-//            }
-//        });
+        // 发送邮箱验证码
+        btnVerifyCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = txtPin.getValue();
+                mEmail = email.getText().toString().trim();
+
+                if (TextUtils.isEmpty(mEmail)) {
+                    PopupUtils.showOKDialog(ModifyEmailActivity.this, "", "Please input the email number");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(value)) {
+                    showOKDialog(getResources().getString(R.string.please_input_the_sns_code));
+                    return;
+                }
+
+                if (value.length() != 5){
+                    showOKDialog(getResources().getString(R.string.please_enter_5_bit_verification_code));
+                    return;
+                }
+                validateCode(value, mEmail);
+            }
+        });
         //发送邮箱
         sendCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,27 +109,29 @@ public class ModifyEmailActivity extends BaseActivity {
         });
     }
 
-    private void validateCode(String value, String phone) {
+    private void validateCode(String code, final String email) {
         AppFuncs.showProgressWaiting(this);
-        AccountHelper.VALIDATE_SMS_CODE helper = new AccountHelper.VALIDATE_SMS_CODE();
-        helper.data.countryCode = "";
-        helper.data.type = ConsUtils.REGISTRATION;
-        helper.data.phone = phone;
-        helper.data.code = value;
+        AccountHelper.sendModifiedMailboxVerificationCode helper = new AccountHelper.sendModifiedMailboxVerificationCode();
+        helper.data.code = code;
+        helper.data.email = email;
+       ;
         OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
-                AccountHelper.Response res = new Gson().fromJson(response.body(), AccountHelper.Response.class);
+                AccountHelper.FIND_USER_ACCOUNT.Response res = new Gson().fromJson(response.body(), AccountHelper.FIND_USER_ACCOUNT.Response.class);
                 if (res.code == 1000) {
 
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString(ConsUtils.INTENT, ConsUtils.INTENT_REGISTER);
-//                    Register register = new Register();
-//                    register.mobilePhone = picker.getSelectedCountryCodeWithPlus() + mPhone;
-//                    bundle.putSerializable(ConsUtils.REGISTRATION, register);
-//                    overlay(PatternActivity.class, bundle);
-//                    AppFuncs.dismissKeyboard(ModifyMobilePhoneActivity.this);
+                    PopupUtils.showCustomDialog(mContext, "", res.message, R.string.ok, -1, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent();
+                            intent.putExtra("pattern",email);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }, null);
+
                 }else {
                     showOKDialog(res.message);
                 }
@@ -144,13 +148,13 @@ public class ModifyEmailActivity extends BaseActivity {
     private void validatePhone(String email) {
         AppFuncs.showProgressWaiting(this);
         AccountHelper.MODIFY_EMAIL helper = new AccountHelper.MODIFY_EMAIL();
-        helper.email = email;
-        OkUtil.publicPost(Url.accounts + "/sendRecoveryEmail", new Gson().toJson(helper), new OkUtil.Callback() {
+        helper.data.email = email;
+        OkUtil.publicPost(Url.accounts_helper, new Gson().toJson(helper), new OkUtil.Callback() {
             @Override
             public void success(Response<String> response) {
                 AppFuncs.dismissProgressWaiting();
-                Log.e(TAG, "success: " + response.body().toString());
-                AccountHelper.Response res = new Gson().fromJson(response.body(), AccountHelper.Response.class);
+                Log.e(TAG, "success: " + response.body());
+                AccountHelper.ResponseTwo res = new Gson().fromJson(response.body(), AccountHelper.ResponseTwo.class);
                 if (res.code == 1000){
                 showOKDialog("Send Success");
                 }else {

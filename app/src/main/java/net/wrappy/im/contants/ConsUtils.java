@@ -34,11 +34,16 @@ public class ConsUtils {
     public static final String CHANGE_MOBILE = "change_mobile";
     public static final String VALIDATE_SMS_CODE = "validate_sms_code";
     public static final String VALIDATE_EMAIL = "validate_email";
+    public static final String WRAPPY_SEND_EMAIL_CODE = "send_email_code";
+    public static final String WRAPPY_CHANGE_EMAIL = "change_email";
     public static final String USERNAME = "username";
     public static final String FIND_USER_ACCOUNT = "find_user_account";
+    public static final String VALIDATE_EMAIL_CODE = "validate_email_code";
+    public static final String VALIDATE_RESET_PATTERN = "reset_pattern";
     public static final String INTENT_CHECK = "check";
     public static String VALIDATE_PHONE = "validate_phone";
     public static String VALIDATE_PASSWORD = "validate_password";
+    public static String VALIDATE_USERNAME = "validate_username";
     public static String SECURITY_QUESTIONS = "security_questions";
     public static String ACCOUNT_STATUS = "account_status";
     public static String MAIN_PROMOTION = "PROMOTION";
@@ -54,6 +59,7 @@ public class ConsUtils {
     public static String WRAPPY_LOGIN_PASSWORD = "WRAPPY_LOGIN_PASSWORD";
 
 
+    public static String NUMBER_OF_LOCKS = "NUMBER_OF_LOCKS";//被锁的次数
     public static String NORMAL = "NORMAL";
     public static String NOT_EXIST = "NOT_EXIST";
     public static String LOCKED = "LOCKED";

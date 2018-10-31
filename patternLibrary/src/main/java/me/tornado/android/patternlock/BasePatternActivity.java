@@ -7,6 +7,7 @@ package me.tornado.android.patternlock;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -37,6 +38,8 @@ public class BasePatternActivity extends AppCompatActivity {
         }
     };
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +57,6 @@ public class BasePatternActivity extends AppCompatActivity {
         view = (View) findViewById(R.id.viewspan);
         mMessageTextError = (TextView) findViewById(R.id.mMessageTextError);
 //        mMessageTextError = (TextView) findViewById(R.id.pl_message_text_error);
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     protected void removeClearPatternRunnable() {

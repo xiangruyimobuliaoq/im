@@ -34,7 +34,6 @@
         android:windowSoftInputMode="stateHidden"
         android:persistent="true"
         android:supportsRtl="true"
-
         android:theme="@style/AppThemeNoActionBar">
 
         <provider
@@ -48,6 +47,7 @@
         </provider>
 
 
+            <!--android:launchMode ="singleTask"-->
         <activity
             android:name=".ui.activity.RouterActivity"
             android:screenOrientation="portrait">
@@ -56,20 +56,30 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
+
             <intent-filter>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT"/>
             <category android:name="android.intent.category.BROWSABLE"/>
+            <!--<data android:scheme="https"-->
+                  <!--android:host="n-wrappytest.newsupplytech.com"-->
+                  <!--android:pathPrefix="/api/accounts/resetPassword"/>-->
+
             <data android:scheme="wrappy"
-                  android:host="app"/>
+                  android:host="app"
+                  android:pathPrefix="/resetPattern"/>
+
             </intent-filter>
 
 
         </activity>
-        <activity android:name=".ui.activity.WelcomActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.LoginActivity"
-                  android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".ui.activity.WelcomActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.ForgetIDActivity"
             android:theme="@style/AppTheme_two"
@@ -90,6 +100,7 @@
             android:name=".ui.activity.InputPasswordLoginActivity"
             android:theme="@style/AppTheme_two"
             android:screenOrientation="portrait"/>
+            <!--android:launchMode ="singleTask"-->
         <activity
             android:name=".ui.activity.MainActivity"
             android:theme="@style/AppThemeNoActionBar"
@@ -119,13 +130,31 @@
             android:name=".ui.activity.ModifyEmailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_two"/>
+            <!--android:launchMode ="singleTask"-->
         <activity
             android:name=".ui.activity.ModifyPhoneActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_two"/>
+            <!--android:launchMode ="singleTask"-->
         <activity
             android:name=".ui.activity.ModifyPasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_two"/>
+        <activity
+            android:name=".ui.activity.EmailModifyPasswordActivity"
+            android:launchMode ="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme_two">
+
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+                <!--<category android:name="android.intent.category.DEFAULT"/>-->
+                <!--<category android:name="android.intent.category.BROWSABLE"/>-->
+                <!--<data android:scheme="wrappy"-->
+                      <!--android:host="app"-->
+                      <!--android:pathPrefix="/resetPattern"/>-->
+            <!--</intent-filter>-->
+
+            </activity>
     </application>
 </manifest>

@@ -16,14 +16,14 @@ import java.util.List;
  */
 public class ManagementAllActivity {
 
-   private static List<Activity> mList = new ArrayList<>();
+   public static List<Activity> mList = new ArrayList<>();
    private static List<Activity> mListTwo = new ArrayList<>();
     public static void addActivity(Activity activity){
         mList.add(activity);
     }
-    public static void addActivityTwo(Activity activity){
-        mListTwo.add(activity);
-    }
+//    public static void addActivityTwo(Activity activity){
+//        mListTwo.add(activity);
+//    }
 
     public static void removeActivity(Activity activity){
 
@@ -33,14 +33,14 @@ public class ManagementAllActivity {
             }
         }
     }
-    public static void removeActivityTwo(Activity activity){
-
-        for (int i = 0; i <mListTwo.size() ; i++) {
-            if (activity.equals(mListTwo.get(i))){
-                mListTwo.remove(i);
-            }
-        }
-    }
+//    public static void removeActivityTwo(Activity activity){
+//
+//        for (int i = 0; i <mListTwo.size() ; i++) {
+//            if (activity.equals(mListTwo.get(i))){
+//                mListTwo.remove(i);
+//            }
+//        }
+//    }
 
 
     public static void finishAllActivity(){
@@ -54,19 +54,19 @@ public class ManagementAllActivity {
             e.printStackTrace();
         }
     }
-    public static void finishAllActivityTwo(){
-
-        try {
-            for (Activity activity : mListTwo) {
-                if (activity != null)
-                    activity.finish();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
+//    public static void finishAllActivityTwo(){
+//
+//        try {
+//            for (Activity activity : mListTwo) {
+//                if (activity != null)
+//                    activity.finish();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
 
 
 }

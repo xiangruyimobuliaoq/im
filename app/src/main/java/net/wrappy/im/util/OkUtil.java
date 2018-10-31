@@ -1,5 +1,6 @@
 package net.wrappy.im.util;
 
+import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -198,8 +199,8 @@ public class OkUtil {
                                     public void onSuccess(Response<String> response) {
                                         if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
                                                 || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
-                                            anevLogin(activity,url,callback,"privatePost",json);
-//                                            activity.overlay(LoginActivity.class);
+//                                            anevLogin(activity,url,callback,"privatePost",json);
+                                            cancelAllRequest(activity);
                                         } else {
                                             Log.e(TAG, "222onSuccess: " + response.body() );
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
@@ -250,8 +251,8 @@ public class OkUtil {
                                     public void onSuccess(Response<String> response) {
                                         if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
                                                 || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
-                                            anevLogin(activity,url,callback,"privatePut",json);
-//                                            activity.overlay(LoginActivity.class);
+//                                            anevLogin(activity,url,callback,"privatePut",json);
+                                            cancelAllRequest(activity);
                                         } else {
                                             Log.e(TAG, "333onSuccess: " + response.body());
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
@@ -284,6 +285,57 @@ public class OkUtil {
         }
     }
 
+
+    public static void privatePut2(final BaseActivity activity, final String url, final String json, final Callback callback) {
+
+            OkGo.<String>put(url).upJson(json).execute(new StringCallback() {
+                @Override
+                public void onSuccess(Response<String> response) {
+                    if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                            || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
+                        refreshAdmin();
+                        OkGo.<String>post(Url.OauthToken)
+                                .params("grant_type", "refresh_token")
+                                .params("refresh_token", ConsUtils.getRefreshtoken())
+                                .execute(new StringCallback() {
+                                    @Override
+                                    public void onSuccess(Response<String> response) {
+                                        if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
+                                                || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
+//                                            anevLogin(activity,url,callback,"privatePut",json);
+                                            cancelAllRequest(activity);
+                                        } else {
+                                            Log.e(TAG, "333onSuccess: " + response.body());
+                                            Auth auth = gson.fromJson(response.body(), Auth.class);
+                                            ConsUtils.putAccestoken(auth.access_token);
+                                            ConsUtils.putRefreshtoken(auth.refresh_token);
+                                            ConsUtils.putTokenType(auth.token_type);
+                                            SpUtil.saveObj(ConsUtils.PROFILE, auth);
+                                            refresh(auth.access_token, auth.token_type);
+                                            privatePut(activity, url, json, callback);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Response<String> response) {
+                                        super.onError(response);
+                                        callback.error(response);
+                                    }
+                                });
+                    } else {
+                        callback.success(response);
+                    }
+                }
+
+                @Override
+                public void onError(Response<String> response) {
+                    super.onError(response);
+                    callback.error(response);
+                }
+            });
+
+    }
+
     public static void privateGet(final BaseActivity activity, final String url, final Callback callback) {
         if (TextUtils.isEmpty(ConsUtils.getAccestoken()) || TextUtils.isEmpty(ConsUtils.getRefreshtoken()) || TextUtils.isEmpty(ConsUtils.getTokenType())) {
             activity.overlay(LoginActivity.class);
@@ -302,8 +354,8 @@ public class OkUtil {
                                     public void onSuccess(Response<String> response) {
                                         if (response.body().contains("{\"error\":\"unauthorized\",") || response.body().contains("{\"error\":\"invalid_token\",")
                                                 || response.body().contains("error_description") || response.body().contains("Bad credentials")) {
-                                            anevLogin(activity,url,callback,"privateGet","");
-//                                            activity.overlay(LoginActivity.class);
+//                                            anevLogin(activity,url,callback,"privateGet","");
+                                            cancelAllRequest(activity);
                                         } else {
                                             Log.e(TAG, "444onSuccess: " + response.body() );
                                             Auth auth = gson.fromJson(response.body(), Auth.class);
@@ -337,48 +389,62 @@ public class OkUtil {
     }
 
     /**
-     *  重新请求获取数据
+     * 取消所有请求并且跳转到登录界面
      * @param activity
-     * @param url
-     * @param callback
-     * @param type
-     * @param json
      */
-    private static void anevLogin(final BaseActivity activity, final String url, final Callback callback, final String type, final String json) {
+    private static void cancelAllRequest(BaseActivity activity) {
 
-          Login(SpUtil.getSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_USERNAME), SpUtil.getSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_PASSWORD), new Callback() {
-              @Override
-              public void success(Response<String> response) {
-                  Log.e(TAG, "重新登录请求数据" + response.body().toString() );
+        OkGo.getInstance().cancelAll();
+        ManagementAllActivity.finishAllActivity();
+        ConsUtils.putAdminAccestoken(null);
+        SpUtil.spSave(ConsUtils.WRAPPY_EXIT,false);
+        activity.overlay(LoginActivity.class);
 
-                  Auth auth = new Gson().fromJson(response.body().toString(), Auth.class);
-                  if (null != auth.account) {
-                      if (auth.error != null){
-                          ManagementAllActivity.finishAllActivity();
-                          activity.overlay(LoginActivity.class);
-                      }else {
-                          if ("privateGet".equals(type)){
-                              privateGet(activity,url,callback);
-                          }else if ("privatePut".equals(type)){
-                              privatePut(activity,url,json,callback);
-                          }else if ("privatePost".equals(type)){
-//                                   privatePost(activity,url,json,callback);  //暂时没有调用此方法
-                          }
-
-                      }
-                  } else {
-                        ManagementAllActivity.finishAllActivity();
-                         activity.overlay(LoginActivity.class);
-                  }
-              }
-
-              @Override
-              public void error(Response<String> response) {
-                  super.error(response);
-                  anevLogin(activity,url,callback,type,json);
-              }
-          });
     }
+
+//    /**
+//     *  重新请求获取数据
+//     * @param activity
+//     * @param url
+//     * @param callback
+//     * @param type
+//     * @param json
+//     */
+//    private static void anevLogin(final BaseActivity activity, final String url, final Callback callback, final String type, final String json) {
+//
+//          Login(SpUtil.getSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_USERNAME), SpUtil.getSaveUsernameOrPassword(ConsUtils.WRAPPY_LOGIN_PASSWORD), new Callback() {
+//              @Override
+//              public void success(Response<String> response) {
+//                  Log.e(TAG, "重新登录请求数据" + response.body().toString() );
+//
+//                  Auth auth = new Gson().fromJson(response.body().toString(), Auth.class);
+//                  if (null != auth.account) {
+//                      if (auth.error != null){
+//                          ManagementAllActivity.finishAllActivity();
+//                          activity.overlay(LoginActivity.class);
+//                      }else {
+//                          if ("privateGet".equals(type)){
+//                              privateGet(activity,url,callback);
+//                          }else if ("privatePut".equals(type)){
+//                              privatePut(activity,url,json,callback);
+//                          }else if ("privatePost".equals(type)){
+////                                   privatePost(activity,url,json,callback);  //暂时没有调用此方法
+//                          }
+//
+//                      }
+//                  } else {
+//                        ManagementAllActivity.finishAllActivity();
+//                         activity.overlay(LoginActivity.class);
+//                  }
+//              }
+//
+//              @Override
+//              public void error(Response<String> response) {
+//                  super.error(response);
+//                  anevLogin(activity,url,callback,type,json);
+//              }
+//          });
+//    }
 
     public abstract static class Callback {
         public abstract void success(Response<String> response);
